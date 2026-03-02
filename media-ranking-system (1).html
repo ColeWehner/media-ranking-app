@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Ranking System</title>
+<style>
+  :root {
+    --bg: #1e2530;
+    --surface: #28323f;
+    --surface2: #2f3b49;
+    --surface3: #364452;
+    --border: #3d4f5e;
+    --border-mid: #4e6172;
+    --accent: #7ab3cc;
+    --accent-dim: #4e85a0;
+    --accent-glow: rgba(122,179,204,0.12);
+    --text: #e8eff5;
+    --text-dim: #9ab2c2;
+    --text-muted: #5d7a8e;
+    --text-label: #7a9aae;
+    --red: #c0392b;
+    --gold: #d4a84e;
+    --silver: #9ab0be;
+    --bronze: #a07850;
+    --tier-top: #4a7a5a;
+    --tier-high: #4a6a7a;
+    --tier-mid: #5a5a4a;
+    --tier-low: #6a4a4a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: Arial, sans-serif; min-height: 100vh; overflow-x: hidden; }
+  /* Soften borders globally */
+  .import-card, .stat-cell, .media-list, .comp-card, .btn, .tier-pill, .tier-option,
+  #seed-panel, .submit-row, .export-box, .modal, .toast, textarea, input[type="text"],
+  .comp-instruction, .rank-item, #paste-area, .slot-pip, .card-tier-badge { border-radius: 8px; }
+
+  /* HEADER */
+  #header { border-bottom: 1px solid var(--border); padding: 18px 40px; display: flex; align-items: center; justify-content: space-between; background: #19222d; position: sticky; top: 0; z-index: 100; }
+  .logo { display: flex; align-items: baseline; gap: 12px; }
+  .logo h1 { font-size: 18px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; }
+  .logo-tag { font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent-dim); padding: 2px 8px; }
+  nav { display: flex; gap: 2px; }
+  .nav-btn { background: none; border: 1px solid transparent; color: var(--text-dim); padding: 7px 18px; font-family: Arial, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.15s; border-radius: 6px; }
+  .nav-btn:hover { color: var(--text); border-color: var(--border-mid); }
+  .nav-btn.active { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-glow); }
+
+  /* APP */
+  #app { max-width: 960px; margin: 0 auto; padding: 36px 24px; }
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  .section-title { font-size: 10px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: var(--text-label); margin-bottom: 20px; display: flex; align-items: center; gap: 14px; }
+  .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* STATS */
+  .stats-bar { display: grid; grid-template-columns: repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); margin-bottom:32px; border-radius: 10px; overflow: hidden; }
+  .stat-cell { background:var(--surface); padding:18px 24px; text-align:center; }
+  .stat-num { font-size:30px; font-weight:900; color:var(--text); letter-spacing:-1px; line-height:1; }
+  .stat-label { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--text-muted); margin-top:6px; }
+
+  /* IMPORT CARDS */
+  .import-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:28px; }
+  @media(max-width:600px){ .import-grid{grid-template-columns:1fr;} }
+  .import-card { border:1px solid var(--border); padding:22px; background:var(--surface); cursor:pointer; transition:all 0.2s; position:relative; overflow:hidden; }
+  .import-card::after { content:''; position:absolute; bottom:0; left:0; width:0; height:1px; background:var(--accent); transition:width 0.25s; }
+  .import-card:hover { border-color:var(--border-mid); background:var(--surface2); }
+  .import-card:hover::after { width:100%; }
+  .import-card h3 { font-size:13px; font-weight:700; letter-spacing:1px; margin-bottom:8px; }
+  .import-card p { font-size:12px; color:var(--text-dim); line-height:1.65; }
+  .card-icon { font-size:24px; margin-bottom:10px; }
+
+  /* FORMS */
+  textarea, input[type="text"] { width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text); font-family:Arial,sans-serif; font-size:13px; padding:14px 16px; outline:none; transition:border-color 0.15s; line-height:1.65; }
+  textarea { resize:vertical; min-height:160px; }
+  textarea:focus, input[type="text"]:focus { border-color:var(--accent-dim); }
+  textarea::placeholder, input[type="text"]::placeholder { color:var(--text-muted); }
+  .paste-hint { font-size:11px; color:var(--text-muted); margin-top:8px; }
+
+  /* MEDIA LIST */
+  .media-list { border:1px solid var(--border); max-height:320px; overflow-y:auto; }
+  .media-list::-webkit-scrollbar { width:3px; }
+  .media-list::-webkit-scrollbar-thumb { background:var(--border-mid); }
+  .media-item { display:flex; align-items:center; padding:9px 14px; border-bottom:1px solid var(--border); font-size:13px; transition:background 0.1s; gap:8px; }
+  .media-item:last-child { border-bottom:none; }
+  .media-item:hover { background:var(--surface2); }
+  .media-item-name { flex:1; }
+  .media-item-elo { font-size:11px; color:var(--text-muted); font-weight:700; width:46px; text-align:right; }
+
+  /* TIER BADGE on media items */
+  .tier-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; cursor:pointer; transition:transform 0.15s; }
+  .tier-dot:hover { transform:scale(1.4); }
+  .tier-dot.tier-none { background:var(--border-mid); }
+  .tier-dot.tier-top { background:#6aaac0; }
+  .tier-dot.tier-high { background:#6aaac0; }
+  .tier-dot.tier-mid  { background:#c0b86a; }
+  .tier-dot.tier-low  { background:#c07a6a; }
+
+  .tier-label { font-size:10px; font-weight:700; letter-spacing:1px; width:36px; text-align:center; flex-shrink:0; }
+  .tier-label.tier-top  { color:#6ab87a; }
+  .tier-label.tier-high { color:#6aaac0; }
+  .tier-label.tier-mid  { color:#c0b86a; }
+  .tier-label.tier-low  { color:#c07a6a; }
+  .tier-label.tier-none { color:var(--text-muted); }
+
+  .delete-btn { background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:13px; padding:2px 6px; transition:color 0.15s; }
+  .delete-btn:hover { color:var(--red); }
+  .add-manual { display:flex; gap:8px; margin-top:14px; }
+
+  /* TIER LEGEND */
+  .tier-legend { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+  .tier-pill { display:flex; align-items:center; gap:6px; padding:5px 12px; border:1px solid var(--border); background:var(--surface); font-size:11px; font-weight:700; letter-spacing:1px; cursor:pointer; transition:all 0.15s; color:var(--text-dim); }
+  .tier-pill:hover { border-color:var(--border-mid); color:var(--text); }
+  .tier-pill .dot { width:7px; height:7px; border-radius:50%; }
+
+  /* SEED PANEL */
+  #seed-panel { background:var(--surface); border:1px solid var(--border); padding:20px 24px; margin-bottom:24px; }
+  #seed-panel h3 { font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--text-label); margin-bottom:10px; }
+  #seed-panel p { font-size:12px; color:var(--text-dim); line-height:1.7; margin-bottom:16px; }
+  .seed-tiers { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+  @media(max-width:560px){ .seed-tiers{grid-template-columns:1fr 1fr;} }
+  .seed-tier-card { border:1px solid var(--border); padding:12px; cursor:pointer; transition:all 0.15s; text-align:center; position:relative; }
+  .seed-tier-card h4 { font-size:12px; font-weight:700; letter-spacing:1px; margin-bottom:4px; }
+  .seed-tier-card p { font-size:10px; color:var(--text-muted); line-height:1.5; margin:0; }
+  .seed-tier-card .elo-range { font-size:13px; font-weight:900; margin-bottom:6px; }
+
+  /* BUTTONS */
+  .btn { font-family:Arial,sans-serif; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:11px 26px; border:none; cursor:pointer; transition:all 0.15s; }
+  .btn-primary { background:var(--surface3); color:var(--text); border:1px solid var(--border-mid); }
+  .btn-primary:hover { background:var(--accent); color:#000; border-color:var(--accent); }
+  .btn-primary:disabled { opacity:0.25; cursor:not-allowed; pointer-events:none; }
+  .btn-secondary { background:none; color:var(--text-dim); border:1px solid var(--border); }
+  .btn-secondary:hover { border-color:var(--border-mid); color:var(--text); }
+  .btn-danger { background:none; color:var(--red); border:1px solid var(--red); }
+  .btn-danger:hover { background:rgba(192,57,43,0.1); }
+  .actions { display:flex; gap:10px; margin-top:24px; flex-wrap:wrap; }
+  .empty-state { text-align:center; padding:60px 40px; color:var(--text-muted); }
+  .empty-state .big-icon { font-size:40px; margin-bottom:14px; }
+  .empty-state p { font-size:13px; line-height:2; }
+
+  /* COMPARE SCREEN */
+  .comp-header { text-align:center; margin-bottom:28px; }
+  .comp-header h2 { font-size:10px; font-weight:700; letter-spacing:5px; text-transform:uppercase; color:var(--text-label); margin-bottom:6px; }
+  .comp-header p { font-size:14px; color:var(--text-dim); margin-bottom:16px; }
+  .comp-header strong { color:var(--text); }
+  .progress-row { display:flex; align-items:center; gap:14px; justify-content:center; }
+  .progress-bar { flex:1; max-width:280px; height:2px; background:var(--border); }
+  .progress-fill { height:100%; background:var(--accent); transition:width 0.6s ease; }
+  .progress-text { font-size:11px; color:var(--text-muted); letter-spacing:1px; white-space:nowrap; }
+  .comp-instruction { text-align:center; font-size:12px; color:var(--text-dim); letter-spacing:0.5px; margin-bottom:20px; padding:10px 16px; border:1px solid var(--border); background:var(--surface); }
+  .comp-instruction span { color:var(--accent); font-weight:700; }
+
+  /* 4-CARD GRID */
+  .quad-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+  @media(max-width:560px){ .quad-grid{grid-template-columns:1fr;} }
+  .comp-card { border:1px solid var(--border); background:var(--surface); cursor:pointer; transition:all 0.18s; user-select:none; overflow:hidden; }
+  .comp-card:hover { border-color:var(--border-mid); background:var(--surface2); }
+  .comp-card.selected-1 { border-color:var(--gold); background:rgba(201,168,76,0.07); }
+  .comp-card.selected-2 { border-color:var(--silver); background:rgba(144,144,144,0.05); }
+  .comp-card.selected-3 { border-color:var(--bronze); background:rgba(140,98,57,0.05); }
+  .comp-card.selected-4 { border-color:var(--border-mid); opacity:0.5; }
+  .card-inner { display:flex; align-items:stretch; min-height:90px; }
+  .rank-badge { width:52px; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:900; border-right:1px solid var(--border); flex-shrink:0; background:var(--surface2); transition:all 0.18s; color:var(--text-muted); }
+  .comp-card.selected-1 .rank-badge { background:rgba(201,168,76,0.12); color:var(--gold); }
+  .comp-card.selected-2 .rank-badge { background:rgba(144,144,144,0.1); color:var(--silver); }
+  .comp-card.selected-3 .rank-badge { background:rgba(140,98,57,0.1); color:var(--bronze); }
+  .card-body { padding:14px 16px; flex:1; }
+  .card-slot { font-size:10px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--text-muted); margin-bottom:5px; transition:color 0.18s; }
+  .comp-card.selected-1 .card-slot { color:var(--gold); }
+  .comp-card.selected-2 .card-slot { color:var(--silver); }
+  .comp-card.selected-3 .card-slot { color:var(--bronze); }
+  .c-title { font-size:15px; font-weight:700; line-height:1.3; }
+  .card-meta { font-size:10px; color:var(--text-muted); margin-top:5px; display:flex; gap:8px; align-items:center; }
+  .card-tier-badge { font-size:9px; font-weight:700; letter-spacing:1px; padding:1px 5px; border-radius:0; }
+  .card-tier-badge.tier-top  { color:#6ab87a; border:1px solid #6ab87a33; }
+  .card-tier-badge.tier-high { color:#6aaac0; border:1px solid #6aaac033; }
+  .card-tier-badge.tier-mid  { color:#c0b86a; border:1px solid #c0b86a33; }
+  .card-tier-badge.tier-low  { color:#c07a6a; border:1px solid #c07a6a33; }
+
+  /* SUBMIT ROW */
+  .submit-row { display:flex; align-items:center; gap:16px; padding:14px 20px; border:1px solid var(--border); background:var(--surface); flex-wrap:wrap; }
+  .submit-status { flex:1; font-size:12px; color:var(--text-dim); min-width:140px; }
+  .submit-status .count { color:var(--accent); font-weight:700; }
+  .rank-slots { display:flex; gap:5px; }
+  .slot-pip { width:28px; height:28px; border:1px solid var(--border); background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:var(--text-muted); transition:all 0.18s; }
+  .slot-pip.filled-1 { border-color:var(--gold); color:var(--gold); background:rgba(201,168,76,0.1); }
+  .slot-pip.filled-2 { border-color:var(--silver); color:var(--silver); background:rgba(144,144,144,0.08); }
+  .slot-pip.filled-3 { border-color:var(--bronze); color:var(--bronze); background:rgba(140,98,57,0.08); }
+  .slot-pip.filled-4 { border-color:var(--border-mid); color:var(--text-dim); }
+  .status-msg { text-align:center; margin-top:14px; font-size:11px; color:var(--text-muted); letter-spacing:0.5px; min-height:18px; }
+  .skip-link { display:block; width:100%; text-align:center; margin-top:8px; background:none; border:none; color:var(--text-muted); font-family:Arial,sans-serif; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; cursor:pointer; padding:8px; transition:color 0.15s; }
+  .skip-link:hover { color:var(--text-dim); }
+
+  /* RANKINGS */
+  .rankings-header { display:flex; align-items:center; gap:12px; margin-bottom:24px; flex-wrap:wrap; }
+  .rank-list { display:flex; flex-direction:column; gap:2px; }
+  .rank-item { display:grid; grid-template-columns:56px 1fr 120px 90px; align-items:center; padding:13px 20px; background:var(--surface); border:1px solid var(--border); transition:border-color 0.15s; }
+  .rank-item:hover { border-color:var(--border-mid); }
+  .rank-item.top1 { border-left:2px solid var(--gold); }
+  .rank-item.top2 { border-left:2px solid var(--silver); }
+  .rank-item.top3 { border-left:2px solid var(--bronze); }
+  .rank-num { font-size:20px; font-weight:900; color:var(--text-muted); letter-spacing:-1px; }
+  .rank-item.top1 .rank-num { color:var(--gold); font-size:18px; }
+  .rank-item.top2 .rank-num { color:var(--silver); font-size:18px; }
+  .rank-item.top3 .rank-num { color:var(--bronze); font-size:18px; }
+  .rank-name-cell { display:flex; flex-direction:column; gap:3px; }
+  .rank-name { font-size:14px; font-weight:700; }
+  .rank-graph-hint { font-size:10px; color:var(--text-muted); letter-spacing:0.3px; }
+  .rank-elo-bar { display:flex; align-items:center; gap:8px; }
+  .elo-bar-bg { flex:1; height:2px; background:var(--border); }
+  .elo-bar-fill { height:100%; background:var(--accent-dim); transition:width 0.8s ease; }
+  .rank-elo-num { font-size:11px; color:var(--text-dim); font-weight:700; letter-spacing:1px; text-align:right; white-space:nowrap; }
+  .rank-comps { font-size:10px; color:var(--text-muted); text-align:right; }
+  @media(max-width:600px){ .rank-item{grid-template-columns:48px 1fr 80px;} .rank-comps{display:none;} }
+
+  .export-box { background:var(--surface); border:1px solid var(--border); padding:20px; margin-top:24px; }
+  .export-box h3 { font-size:10px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--text-label); margin-bottom:12px; }
+  .export-text { font-size:12px; color:var(--text-dim); line-height:2; white-space:pre-wrap; font-family:'Courier New',monospace; }
+
+  /* MODAL */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.82); z-index:200; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--surface); border:1px solid var(--border-mid); padding:36px; max-width:460px; width:90%; animation:fadeIn 0.2s ease; }
+  .modal h2 { font-size:16px; font-weight:900; letter-spacing:1px; margin-bottom:10px; }
+  .modal p { font-size:13px; color:var(--text-dim); line-height:1.7; margin-bottom:22px; }
+  .modal .actions { margin-top:0; }
+
+  /* TIER MODAL CONTENT */
+  .tier-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:20px; }
+  .tier-option { border:1px solid var(--border); padding:14px 16px; cursor:pointer; transition:all 0.15s; }
+  .tier-option:hover { border-color:var(--border-mid); background:var(--surface2); }
+  .tier-option.selected { background:var(--surface2); }
+  .tier-option h4 { font-size:12px; font-weight:700; letter-spacing:1px; margin-bottom:3px; }
+  .tier-option p { font-size:11px; color:var(--text-muted); margin:0; line-height:1.5; }
+  .tier-option .elo-tag { font-size:13px; font-weight:900; margin-bottom:6px; }
+  .tier-option.t-top { border-left:2px solid #6ab87a; }
+  .tier-option.t-top.selected { border-color:#6ab87a; }
+  .tier-option.t-high { border-left:2px solid #6aaac0; }
+  .tier-option.t-high.selected { border-color:#6aaac0; }
+  .tier-option.t-mid { border-left:2px solid #c0b86a; }
+  .tier-option.t-mid.selected { border-color:#c0b86a; }
+  .tier-option.t-low { border-left:2px solid #c07a6a; }
+  .tier-option.t-low.selected { border-color:#c07a6a; }
+
+  /* PASTE */
+  #paste-area { border:1px solid var(--border); background:var(--surface); padding:24px; margin-bottom:20px; }
+
+  /* TOAST */
+  .toast { position:fixed; bottom:28px; right:28px; background:var(--surface3); color:var(--text); border:1px solid var(--border-mid); font-size:11px; font-weight:700; letter-spacing:1px; padding:11px 22px; transform:translateY(70px); opacity:0; transition:all 0.25s ease; z-index:300; }
+  .toast.show { transform:translateY(0); opacity:1; }
+
+  /* PREFERENCE GRAPH INDICATOR */
+  .graph-override { font-size:10px; color:#7aaabb; font-style:italic; letter-spacing:0.3px; }
+  .rank-name-cell { display:flex; flex-direction:column; justify-content:center; gap:2px; min-width:0; }
+  .rank-name-cell .rank-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div class="logo">
+    <h1>Media Ranking System</h1>
+    <span class="logo-tag">ELO</span>
+  </div>
+  <nav>
+    <button class="nav-btn active" onclick="showScreen('import')" id="nav-import">Library</button>
+    <button class="nav-btn" onclick="showScreen('battle')" id="nav-battle">Compare</button>
+    <button class="nav-btn" onclick="showScreen('rankings')" id="nav-rankings">Rankings</button>
+  </nav>
+</div>
+
+<div id="app">
+
+  <!-- ===== LIBRARY ===== -->
+  <div class="screen active" id="screen-import">
+
+    <div class="stats-bar">
+      <div class="stat-cell"><div class="stat-num" id="stat-count">0</div><div class="stat-label">Titles</div></div>
+      <div class="stat-cell"><div class="stat-num" id="stat-comps">0</div><div class="stat-label">Comparisons</div></div>
+      <div class="stat-cell"><div class="stat-num" id="stat-top" style="font-size:15px;padding-top:6px;">—</div><div class="stat-label">Top Ranked</div></div>
+    </div>
+
+    <!-- PRE-SEED EXPLAINER -->
+    <div id="seed-panel">
+      <h3>Pre-Seed Your Library</h3>
+      <p>Before comparing, tag each title with a rough tier. This gives the ELO engine a head start and reduces the number of comparisons needed. Click the dot next to any title to assign it a tier, or use the bulk buttons below.</p>
+      <div class="tier-legend">
+        <div class="tier-pill" onclick="bulkTier('high')"><span class="dot" style="background:#6aaac0"></span>HIGH</div>
+        <div class="tier-pill" onclick="bulkTier('mid')"><span class="dot" style="background:#c0b86a"></span>MID</div>
+        <div class="tier-pill" onclick="bulkTier('low')"><span class="dot" style="background:#c07a6a"></span>LOW</div>
+        <div class="tier-pill" onclick="bulkTier('none')"><span class="dot" style="background:var(--border-mid)"></span>Clear All</div>
+      </div>
+    </div>
+
+    <div class="section-title">Add Your Media</div>
+
+    <div class="import-grid">
+      <div class="import-card" onclick="togglePaste()">
+        <div class="card-icon">&#9776;</div>
+        <h3>Paste a List</h3>
+        <p>Drop in your entire list at once — one title per line. Works great with Letterboxd, IMDb, or your notes app.</p>
+      </div>
+      <div class="import-card" onclick="document.getElementById('manual-input').focus()">
+        <div class="card-icon">&#43;</div>
+        <h3>Add One by One</h3>
+        <p>Type titles individually and press Enter or click Add.</p>
+      </div>
+    </div>
+
+    <div id="paste-area" style="display:none;">
+      <div class="section-title">Paste Your List</div>
+      <textarea id="paste-input" placeholder="Paste one title per line:&#10;&#10;Bohemian Rhapsody&#10;Hotel California&#10;Stairway to Heaven&#10;..."></textarea>
+      <div class="paste-hint">One title per line &nbsp;·&nbsp; Blank lines ignored &nbsp;·&nbsp; Duplicates skipped</div>
+      <div class="actions">
+        <button class="btn btn-primary" onclick="importPaste()">Import List</button>
+        <button class="btn btn-secondary" onclick="togglePaste()">Cancel</button>
+      </div>
+    </div>
+
+    <div class="section-title">Your Library <span style="font-size:9px;color:var(--text-muted);letter-spacing:1px;font-weight:400;"> — click the dot to set tier</span></div>
+
+    <div class="add-manual">
+      <input type="text" id="manual-input" placeholder="Enter a title..." onkeydown="if(event.key==='Enter')addManual()">
+      <button class="btn btn-primary" onclick="addManual()">Add</button>
+    </div>
+
+    <div style="margin-top:14px;">
+      <div class="empty-state" id="empty-msg">
+        <div class="big-icon">&#9654;</div>
+        <p>Your library is empty.<br>Paste a list or add titles above to get started.</p>
+      </div>
+      <div class="media-list" id="media-list" style="display:none;"></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="start-comp-btn" onclick="startComp()" disabled>Start Comparing</button>
+      <button class="btn btn-secondary" onclick="confirmClear()">Clear All</button>
+    </div>
+  </div>
+
+  <!-- ===== COMPARE ===== -->
+  <div class="screen" id="screen-battle">
+    <div class="comp-header">
+      <h2>Comparison Round</h2>
+      <p>Rank these <strong>4 titles</strong> from best to worst by clicking them in order.</p>
+      <div class="progress-row">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-text" id="progress-text">0 comparisons</div>
+      </div>
+      <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-top:8px;" id="conf-pct-label"></div>
+    </div>
+
+    <div class="comp-instruction">
+      Click in order: <span>#1 Best</span> &rarr; <span>#2</span> &rarr; <span>#3</span> &rarr; <span>#4 Worst</span> &nbsp;&middot;&nbsp; Click a selected title to deselect it
+    </div>
+
+    <div class="quad-grid" id="quad-grid"></div>
+
+    <div class="submit-row">
+      <div class="submit-status" id="submit-status">Select <span class="count">4</span> titles to rank</div>
+      <div class="rank-slots">
+        <div class="slot-pip" id="pip-1">1</div>
+        <div class="slot-pip" id="pip-2">2</div>
+        <div class="slot-pip" id="pip-3">3</div>
+        <div class="slot-pip" id="pip-4">4</div>
+      </div>
+      <button class="btn btn-primary" id="submit-btn" onclick="submitRanking()" disabled>Submit</button>
+    </div>
+
+    <div class="status-msg" id="status-msg"></div>
+    <button class="skip-link" onclick="loadComparison()">Skip this round &rarr;</button>
+  </div>
+
+  <!-- ===== RANKINGS ===== -->
+  <div class="screen" id="screen-rankings">
+    <div class="rankings-header">
+      <div class="section-title" style="flex:1;margin:0;">Current Rankings</div>
+      <div id="conf-badge" style="font-size:11px;font-weight:700;letter-spacing:1px;padding:7px 14px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);"></div>
+      <button class="btn btn-secondary" onclick="showScreen('battle')">Compare More</button>
+      <button class="btn btn-primary" onclick="toggleExport()">Export</button>
+    </div>
+    <div id="rank-list" class="rank-list"></div>
+    <div class="export-box" id="export-box" style="display:none;">
+      <h3>Your Rankings — Copy Below</h3>
+      <div class="export-text" id="export-text"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Tier Assignment Modal -->
+<div class="modal-overlay" id="tier-modal">
+  <div class="modal">
+    <h2 id="tier-modal-title">Set Tier</h2>
+    <p>Where do you expect this title to land overall?</p>
+    <div class="tier-grid" style="grid-template-columns:1fr 1fr 1fr;">
+      <div class="tier-option t-high" onclick="assignTier('high')">
+        <div class="elo-tag" style="color:#6aaac0">1150</div>
+        <h4>HIGH TIER</h4>
+        <p>Above average. Upper half.</p>
+      </div>
+      <div class="tier-option t-mid" onclick="assignTier('mid')">
+        <div class="elo-tag" style="color:#c0b86a">1000</div>
+        <h4>MID TIER</h4>
+        <p>Solid. Somewhere in the middle.</p>
+      </div>
+      <div class="tier-option t-low" onclick="assignTier('low')">
+        <div class="elo-tag" style="color:#c07a6a">850</div>
+        <h4>LOW TIER</h4>
+        <p>Weaker picks. Lower half.</p>
+      </div>
+    </div>
+    <button class="btn btn-secondary" style="width:100%;" onclick="assignTier('none')">No Preference — Keep at 1000</button>
+  </div>
+</div>
+
+<!-- General confirm modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2 id="modal-title">Confirm</h2>
+    <p id="modal-body"></p>
+    <div class="actions">
+      <button class="btn btn-danger" id="modal-confirm">Confirm</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let media = [];
+let compCount = 0;
+let currentGroup = null;
+let selectionOrder = [];
+let tierModalTarget = null; // id of item being tier-assigned
+
+const K = 32;
+const SLOT_NAMES   = ['Best', '2nd', '3rd', 'Worst'];
+const SLOT_CLASSES = ['selected-1','selected-2','selected-3','selected-4'];
+
+const TIER_ELO = { top: 1150, high: 1150, mid: 1000, low: 850, none: 1000 };
+const TIER_LABELS = { top: 'HIGH', high: 'HIGH', mid: 'MID', low: 'LOW', none: '' };
+const TIER_COLORS = { top: '#6aaac0', high: '#6aaac0', mid: '#c0b86a', low: '#c07a6a', none: '' };
+
+
+// ═══════════════════════════════════════════════════════
+//  PREFERENCE GRAPH
+//
+//  Every comparison records directed edges: A ranked above B → edge A→B.
+//  We store the win count for each pair so repeated evidence accumulates.
+//
+//  The graph does two jobs:
+//    1. OVERRIDE: if B has more direct wins over A than A has over B,
+//       and the ELO gap is within reason, B slots above A in the final ranking.
+//    2. UNCERTAINTY: titles involved in preference cycles (A>B>C>A) are kept
+//       uncertain and get prioritised for more comparisons to resolve the tie.
+// ═══════════════════════════════════════════════════════
+let preferenceGraph = {}; // { winnerId: { loserId: winCount } }
+
+function recordPreference(winnerId, loserId) {
+  if (!preferenceGraph[winnerId]) preferenceGraph[winnerId] = {};
+  preferenceGraph[winnerId][loserId] = (preferenceGraph[winnerId][loserId] || 0) + 1;
+}
+
+// How many times A has beaten B directly
+function aBeatsB(idA, idB) {
+  return (preferenceGraph[idA] || {})[idB] || 0;
+}
+
+// Net preference score: positive = more wins than losses across all matchups
+function netPreferenceScore(id) {
+  let wins = 0, losses = 0;
+  for (const loserId in (preferenceGraph[id] || {})) wins += preferenceGraph[id][loserId];
+  for (const winnerId in preferenceGraph) {
+    if (winnerId !== String(id)) losses += (preferenceGraph[winnerId][id] || 0);
+  }
+  return wins - losses;
+}
+
+// Detect if this title is part of an intransitive cycle: A>B, B>C, C>A
+function hasCycleInvolving(id) {
+  const iBeats = Object.keys(preferenceGraph[id] || {});
+  for (const loserId of iBeats) {
+    const loserBeats = Object.keys(preferenceGraph[loserId] || {});
+    for (const thirdId of loserBeats) {
+      if ((preferenceGraph[thirdId] || {})[id]) return true;
+    }
+  }
+  return false;
+}
+
+// ── COMPOSITE SCORE ─────────────────────────────────────────────────
+// The final ranking uses a weighted combination of:
+//   • ELO rating (primary signal, normalised to 0–1)
+//   • Net preference score from the graph (secondary signal)
+//   • Direct head-to-head overrides (trump card for close pairs)
+//
+// This means: ELO does the heavy lifting, but direct evidence overrides
+// ELO when the two pieces of media have actually faced each other.
+
+function getCompositeScore(m, eloMin, eloRange) {
+  const eloNorm = eloRange > 0 ? (m.elo - eloMin) / eloRange : 0.5;
+  const netPref = netPreferenceScore(m.id);
+  // Net preference bonus: each net win adds ~0.008 to the 0–1 score
+  // Capped at ±0.15 so it can nudge but not dominate
+  const prefBonus = Math.max(-0.15, Math.min(0.15, netPref * 0.008));
+  return eloNorm + prefBonus;
+}
+
+// ── GRAPH-ADJUSTED RANKING ──────────────────────────────────────────
+// Build the final ranking in three steps:
+//   Step 1: Sort by composite score (ELO + preference bonus)
+//   Step 2: Apply direct head-to-head overrides for adjacent pairs
+//   Step 3: Propagate overrides through multiple passes (handles chains)
+
+function getGraphAdjustedRanking() {
+  if (media.length === 0) return [];
+
+  const elos    = media.map(m => m.elo);
+  const eloMin  = Math.min(...elos);
+  const eloMax  = Math.max(...elos);
+  const eloRange = eloMax - eloMin || 1;
+
+  // Step 1 — composite sort
+  let ranked = [...media].sort((a, b) =>
+    getCompositeScore(b, eloMin, eloRange) - getCompositeScore(a, eloMin, eloRange)
+  );
+
+  // Step 2 & 3 — direct override passes
+  // Rules for an override swap of ranked[i] (A) and ranked[i+1] (B):
+  //   • B has beaten A more than A has beaten B  (direct evidence)
+  //   • ELO gap < 180  (don't override a massive ELO difference)
+  //   • B has beaten A at least once
+  //   A stronger override (B beat A 2+ times) ignores a slightly larger ELO gap.
+  const MAX_PASSES = 8;
+  for (let pass = 0; pass < MAX_PASSES; pass++) {
+    let anySwap = false;
+    for (let i = 0; i < ranked.length - 1; i++) {
+      const A = ranked[i];
+      const B = ranked[i + 1];
+      const bWinsOverA = aBeatsB(B.id, A.id);
+      const aWinsOverB = aBeatsB(A.id, B.id);
+      const eloDiff    = Math.abs(A.elo - B.elo);
+
+      const softOverride   = bWinsOverA > aWinsOverB && bWinsOverA >= 1 && eloDiff < 180;
+      const strongOverride = bWinsOverA >= 2 && bWinsOverA > aWinsOverB && eloDiff < 280;
+
+      if (softOverride || strongOverride) {
+        ranked[i]     = B;
+        ranked[i + 1] = A;
+        anySwap = true;
+      }
+    }
+    if (!anySwap) break; // stable — no more passes needed
+  }
+
+  return ranked;
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  ELO ENGINE
+// ═══════════════════════════════════════════════════════
+function expectedScore(a, b) {
+  return 1 / (1 + Math.pow(10, (b - a) / 400));
+}
+
+function applyGroupElo(rankedItems) {
+  for (let i = 0; i < rankedItems.length; i++) {
+    for (let j = i + 1; j < rankedItems.length; j++) {
+      const winner = rankedItems[i];
+      const loser  = rankedItems[j];
+      const dist   = j - i;
+      const scaledK = K * (dist === 1 ? 0.6 : dist === 2 ? 0.9 : 1.0);
+      const ea = expectedScore(winner.elo, loser.elo);
+      const eb = expectedScore(loser.elo, winner.elo);
+      winner.elo = Math.round(winner.elo + scaledK * (1 - ea));
+      loser.elo  = Math.round(loser.elo  + scaledK * (0 - eb));
+      // Record in preference graph
+      recordPreference(winner.id, loser.id);
+    }
+  }
+  rankedItems.forEach(m => m.comparisons = (m.comparisons || 0) + 1);
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  UNCERTAINTY ENGINE v2
+// ═══════════════════════════════════════════════════════
+function getUncertainty(m) {
+  const n = m.comparisons || 0;
+  const baseFactor = 1 / (1 + n * 0.22);
+  const verifiedVsPeers = m.peerComps || 0;
+  const peerFactor = 1 / (1 + verifiedVsPeers * 0.45);
+
+  const elos = media.map(x => x.elo);
+  const sorted = elos.slice().sort((a,b) => a-b);
+  const median = sorted[Math.floor(sorted.length / 2)];
+  const spread = Math.max(...elos) - Math.min(...elos) || 1;
+  const distFromCenter = Math.abs(m.elo - median) / spread;
+  const divergenceBonus = (n >= 6 && verifiedVsPeers >= 3) ? distFromCenter * 0.3 : 0;
+
+  const topTierCount = Math.max(2, Math.ceil(media.length * 0.20));
+  const rankByElo = [...media].sort((a,b) => b.elo - a.elo);
+  const currentRank = rankByElo.findIndex(x => x.id === m.id);
+  const isTopTier = currentRank < topTierCount;
+  const topTierUncertainty = isTopTier && verifiedVsPeers < 4 ? 0.25 : 0;
+
+  // Graph uncertainty bonus: if this title has intransitive cycles, keep it uncertain
+  const cycleBonus = hasCycleInvolving(m.id) ? 0.15 : 0;
+
+  const raw = baseFactor * peerFactor - divergenceBonus + topTierUncertainty + cycleBonus;
+  return Math.max(0.04, Math.min(1.0, raw));
+}
+
+function scoreGroup(group) {
+  const avgUnc = group.reduce((s, m) => s + getUncertainty(m), 0) / group.length;
+  const elos = group.map(m => m.elo);
+  const eloSpread = Math.max(...elos) - Math.min(...elos);
+  const spreadScore = eloSpread < 15 ? 0.45 :
+                      eloSpread < 50 ? 0.65 + eloSpread/150 :
+                      eloSpread < 180 ? 1.0 :
+                      eloSpread < 320 ? 1.0 - (eloSpread-180)/400 : 0.35;
+
+  const topTierCount = Math.max(2, Math.ceil(media.length * 0.20));
+  const rankByElo = [...media].sort((a,b) => b.elo - a.elo);
+  const topTierInGroup = group.filter(m => rankByElo.findIndex(x => x.id === m.id) < topTierCount).length;
+  const topTierBonus = topTierInGroup >= 2 ? 1.3 : topTierInGroup === 1 ? 1.05 : 1.0;
+
+  // Bonus for groups where the preference graph says results might be contested
+  const graphContest = group.some(m => hasCycleInvolving(m.id)) ? 1.2 : 1.0;
+
+  const groupKey = group.map(m => m.id).sort().join(',');
+  const recencyPenalty = recentGroups.has(groupKey) ? 0.15 : 1.0;
+
+  return avgUnc * spreadScore * topTierBonus * graphContest * recencyPenalty;
+}
+
+const recentGroups = new Set();
+const MAX_RECENT = 16;
+
+function selectGroup() {
+  if (media.length < 4) return null;
+
+  // Phase 1: Bootstrap
+  const unseen = media.filter(m => !m.comparisons);
+  if (unseen.length >= 1) {
+    const rnd = arr => arr.splice(Math.floor(Math.random()*arr.length), 1)[0];
+    const pool = [...unseen];
+    const seed = rnd(pool);
+    const group = [seed];
+    const fillers = [
+      ...pool,
+      ...media.filter(m => m !== seed && (m.comparisons||0) <= 1).sort(()=>Math.random()-0.5),
+      ...media.filter(m => m !== seed && (m.comparisons||0) > 1).sort(()=>Math.random()-0.5)
+    ];
+    while (group.length < 4 && fillers.length) {
+      const next = fillers.shift();
+      if (next && !group.includes(next)) group.push(next);
+    }
+    if (group.length === 4) return group.sort(() => Math.random() - 0.5);
+  }
+
+  // Phase 2+3: Scored candidate selection
+  const CANDIDATES = Math.min(80, media.length * 4);
+  let bestGroup = null, bestScore = -1;
+
+  for (let attempt = 0; attempt < CANDIDATES; attempt++) {
+    const pool = [...media];
+    const group = [];
+    for (let pick = 0; pick < 4 && pool.length > 0; pick++) {
+      const weights = pool.map(m => getUncertainty(m));
+      const total = weights.reduce((s,w) => s+w, 0);
+      let r = Math.random() * total;
+      let chosen = pool[pool.length-1];
+      for (let i = 0; i < pool.length; i++) { r -= weights[i]; if (r <= 0) { chosen = pool[i]; break; } }
+      group.push(chosen);
+      pool.splice(pool.indexOf(chosen), 1);
+    }
+    if (group.length < 4) continue;
+    const score = scoreGroup(group);
+    if (score > bestScore) { bestScore = score; bestGroup = [...group]; }
+  }
+
+  if (!bestGroup) return null;
+  const key = bestGroup.map(m => m.id).sort().join(',');
+  recentGroups.add(key);
+  if (recentGroups.size > MAX_RECENT) recentGroups.delete(recentGroups.values().next().value);
+  return bestGroup.sort(() => Math.random() - 0.5);
+}
+
+function recordPeerComps(rankedItems) {
+  for (let i = 0; i < rankedItems.length; i++) {
+    let peerFaced = 0;
+    for (let j = 0; j < rankedItems.length; j++) {
+      if (i !== j && Math.abs(rankedItems[i].elo - rankedItems[j].elo) <= 150) peerFaced++;
+    }
+    rankedItems[i].peerComps = (rankedItems[i].peerComps || 0) + (peerFaced > 0 ? 1 : 0);
+  }
+}
+
+function getOverallConfidence() {
+  if (media.length === 0) return 0;
+  const avgUnc = media.reduce((s,m) => s + getUncertainty(m), 0) / media.length;
+  return Math.round(Math.max(0, Math.min(100, (1 - avgUnc) * 115 - 8)));
+}
+
+function getUnsettledCount() {
+  return media.filter(m => getUncertainty(m) > 0.28).length;
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  if (name === 'battle') loadComparison();
+  if (name === 'rankings') renderRankings();
+  if (name === 'import') renderList();
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  LIBRARY
+// ═══════════════════════════════════════════════════════
+function addItem(name, tier) {
+  name = name.trim();
+  if (!name) return false;
+  if (media.find(m => m.name.toLowerCase() === name.toLowerCase())) return false;
+  const t = tier || 'none';
+  media.push({
+    name,
+    elo: TIER_ELO[t],
+    tier: t,
+    comparisons: 0,
+    peerComps: 0,
+    id: Date.now() + Math.random()
+  });
+  return true;
+}
+
+function addManual() {
+  const input = document.getElementById('manual-input');
+  if (addItem(input.value)) {
+    input.value = '';
+    renderList();
+    updateStats();
+    showToast('Added');
+  } else {
+    showToast('Already in list or empty');
+  }
+}
+
+function importPaste() {
+  const text = document.getElementById('paste-input').value;
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  let added = 0;
+  lines.forEach(l => { if (addItem(l)) added++; });
+  document.getElementById('paste-input').value = '';
+  togglePaste();
+  renderList();
+  updateStats();
+  showToast(`Imported ${added} title${added !== 1 ? 's' : ''}`);
+}
+
+function removeItem(id) {
+  media = media.filter(m => m.id !== id);
+  // Clean preference graph
+  delete preferenceGraph[id];
+  for (const k in preferenceGraph) delete preferenceGraph[k][id];
+  renderList();
+  updateStats();
+}
+
+function renderList() {
+  const list   = document.getElementById('media-list');
+  const empty  = document.getElementById('empty-msg');
+  const btn    = document.getElementById('start-comp-btn');
+  if (media.length === 0) { list.style.display='none'; empty.style.display='block'; btn.disabled=true; return; }
+  empty.style.display = 'none';
+  list.style.display  = 'block';
+  btn.disabled = media.length < 4;
+
+  list.innerHTML = media.map(m => {
+    const t = m.tier || 'none';
+    const tlabel = TIER_LABELS[t] || '';
+    const tcolor = TIER_COLORS[t] || 'var(--border-mid)';
+    return `
+      <div class="media-item">
+        <span class="tier-dot tier-${t}" onclick="openTierModal(${m.id})" title="Set tier"></span>
+        <span class="tier-label tier-${t}">${tlabel || '—'}</span>
+        <span class="media-item-name">${escHtml(m.name)}</span>
+        <span class="media-item-elo">${m.elo}</span>
+        <button class="delete-btn" onclick="removeItem(${m.id})">✕</button>
+      </div>`;
+  }).join('');
+}
+
+function togglePaste() {
+  const pa = document.getElementById('paste-area');
+  pa.style.display = pa.style.display === 'none' ? 'block' : 'none';
+}
+
+function confirmClear() {
+  if (!media.length) return;
+  openModal('Clear Everything?', 'This will delete your entire library, all ranking data, and all preference history. This cannot be undone.', () => {
+    media = []; compCount = 0; preferenceGraph = {};
+    recentGroups.clear();
+    renderList(); updateStats(); closeModal();
+    showToast('Library cleared');
+  });
+}
+
+function updateStats() {
+  document.getElementById('stat-count').textContent = media.length;
+  document.getElementById('stat-comps').textContent = compCount;
+  if (media.length > 0) {
+    const top = getGraphAdjustedRanking()[0];
+    const name = top.name.length > 16 ? top.name.slice(0,16) + '…' : top.name;
+    document.getElementById('stat-top').textContent = name;
+  } else {
+    document.getElementById('stat-top').textContent = '—';
+  }
+}
+
+// Bulk tier assignment
+function bulkTier(tier) {
+  media.forEach(m => {
+    // Only set if no tier has been assigned yet, or if clearing
+    if (tier === 'none' || !m.tier || m.tier === 'none') {
+      m.tier = tier;
+      m.elo  = TIER_ELO[tier];
+    }
+  });
+  renderList();
+  updateStats();
+  showToast(tier === 'none' ? 'Tiers cleared' : `Set unseeded titles to ${tier.toUpperCase()}`);
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  TIER MODAL
+// ═══════════════════════════════════════════════════════
+function openTierModal(id) {
+  tierModalTarget = id;
+  const m = media.find(x => x.id === id);
+  if (!m) return;
+  document.getElementById('tier-modal-title').textContent = `Set Tier: ${m.name.length > 30 ? m.name.slice(0,30)+'…' : m.name}`;
+  // Highlight currently selected tier
+  document.querySelectorAll('.tier-option').forEach(el => el.classList.remove('selected'));
+  if (m.tier && m.tier !== 'none') {
+    const map = { top:'t-top', high:'t-high', mid:'t-mid', low:'t-low' };
+    const el = document.querySelector('.tier-option.' + (map[m.tier] || ''));
+    if (el) el.classList.add('selected');
+  }
+  document.getElementById('tier-modal').classList.add('open');
+}
+
+function assignTier(tier) {
+  const m = media.find(x => x.id === tierModalTarget);
+  if (!m) return;
+  // Only update ELO from tier if no comparisons yet — don't overwrite earned ELO
+  if (m.comparisons === 0) m.elo = TIER_ELO[tier];
+  m.tier = tier;
+  tierModalTarget = null;
+  document.getElementById('tier-modal').classList.remove('open');
+  renderList();
+  updateStats();
+}
+
+document.getElementById('tier-modal').addEventListener('click', function(e) {
+  if (e.target === this) { tierModalTarget = null; this.classList.remove('open'); }
+});
+
+
+// ═══════════════════════════════════════════════════════
+//  COMPARE ENGINE
+// ═══════════════════════════════════════════════════════
+function startComp() { showScreen('battle'); }
+
+function loadComparison() {
+  selectionOrder = [];
+  if (media.length < 4) {
+    document.getElementById('quad-grid').innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted);font-size:13px;">
+        Need at least 4 titles in your library.<br>
+        <button class="btn btn-primary" style="margin-top:18px;" onclick="showScreen('import')">Go to Library</button>
+      </div>`;
+    document.getElementById('submit-btn').disabled = true;
+    return;
+  }
+  currentGroup = selectGroup();
+  if (!currentGroup) return;
+  renderCards();
+  updateSubmitState();
+  updateProgress();
+  document.getElementById('status-msg').textContent = '';
+}
+
+function renderCards() {
+  document.getElementById('quad-grid').innerHTML = currentGroup.map((m, idx) => {
+    const t = m.tier || 'none';
+    const tierTag = t !== 'none' ? `<span class="card-tier-badge tier-${t}">${TIER_LABELS[t]}</span>` : '';
+    return `
+      <div class="comp-card" id="comp-card-${idx}" onclick="toggleCard(${idx})">
+        <div class="card-inner">
+          <div class="rank-badge" id="badge-${idx}">?</div>
+          <div class="card-body">
+            <div class="card-slot" id="slot-label-${idx}">Click to rank</div>
+            <div class="c-title">${escHtml(m.name)}</div>
+            <div class="card-meta">${tierTag}<span>ELO ${m.elo}</span></div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleCard(idx) {
+  const pos = selectionOrder.indexOf(idx);
+  if (pos !== -1) selectionOrder.splice(pos, 1);
+  else if (selectionOrder.length < 4) selectionOrder.push(idx);
+
+  currentGroup.forEach((_, i) => {
+    const card = document.getElementById('comp-card-' + i);
+    const badge = document.getElementById('badge-' + i);
+    const slotLabel = document.getElementById('slot-label-' + i);
+    const rankPos = selectionOrder.indexOf(i);
+    SLOT_CLASSES.forEach(c => card.classList.remove(c));
+    if (rankPos !== -1) {
+      card.classList.add(SLOT_CLASSES[rankPos]);
+      badge.textContent = rankPos + 1;
+      slotLabel.textContent = SLOT_NAMES[rankPos];
+    } else {
+      badge.textContent = '?';
+      slotLabel.textContent = 'Click to rank';
+    }
+  });
+  updateSubmitState();
+}
+
+function updateSubmitState() {
+  const filled = selectionOrder.length;
+  const rem    = 4 - filled;
+  document.getElementById('submit-btn').disabled = filled < 4;
+  document.getElementById('submit-status').innerHTML =
+    rem > 0 ? `Select <span class="count">${rem}</span> more title${rem!==1?'s':''}` : `All ranked — submit when ready`;
+  for (let i = 1; i <= 4; i++) {
+    const pip = document.getElementById('pip-' + i);
+    pip.className = 'slot-pip' + (i <= filled ? ' filled-' + i : '');
+  }
+}
+
+function submitRanking() {
+  if (selectionOrder.length < 4) return;
+  const rankedItems = selectionOrder.map(idx => currentGroup[idx]);
+  applyGroupElo(rankedItems); // also records preference graph edges
+  recordPeerComps(rankedItems);
+  compCount++;
+  updateStats();
+  document.getElementById('status-msg').textContent = `✓ Recorded — "${rankedItems[0].name}" ranked #1 in this round`;
+  setTimeout(() => loadComparison(), 550);
+}
+
+function updateProgress() {
+  const conf = getOverallConfidence();
+  const unsettled = getUnsettledCount();
+  document.getElementById('progress-fill').style.width = conf + '%';
+  document.getElementById('progress-text').textContent = `${compCount} comparison${compCount!==1?'s':''}`;
+
+  const label = document.getElementById('conf-pct-label');
+  if (label) label.textContent = conf > 0 ? `RANKING CONFIDENCE: ${conf}%` : '';
+
+  let msg = '';
+  if (compCount === 0) msg = '';
+  else if (conf < 30) msg = `Building baseline — ${unsettled} titles still need data`;
+  else if (conf < 55) msg = `Rankings forming — ${unsettled} titles still uncertain`;
+  else if (conf < 75) msg = `Good confidence — ${unsettled} titles left to settle`;
+  else if (conf < 90) msg = `Strong rankings — only ${unsettled} title${unsettled!==1?'s':''} still close to call`;
+  else                msg = `High confidence — rankings are well established`;
+  document.getElementById('status-msg').textContent = msg;
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  RANKINGS
+// ═══════════════════════════════════════════════════════
+function renderRankings() {
+  const list = document.getElementById('rank-list');
+  if (media.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="big-icon">&#9776;</div><p>No media yet.<br>Add titles and start comparing.</p></div>`;
+    const badge = document.getElementById('conf-badge');
+    if (badge) badge.textContent = '';
+    return;
+  }
+
+  const conf = getOverallConfidence();
+  const badge = document.getElementById('conf-badge');
+  if (badge) {
+    const lbl = conf < 30 ? 'Early Data' : conf < 55 ? 'Forming' : conf < 75 ? 'Good' : conf < 90 ? 'Strong' : 'High Confidence';
+    badge.textContent = `Confidence: ${conf}% — ${lbl}`;
+    badge.style.color = conf < 40 ? 'var(--text-muted)' : conf < 70 ? 'var(--text-dim)' : 'var(--accent)';
+    badge.style.borderColor = conf >= 70 ? 'var(--accent-dim)' : 'var(--border)';
+  }
+
+  const graphRanked = getGraphAdjustedRanking();
+  const eloRanked   = [...media].sort((a, b) => b.elo - a.elo);
+  const eloValues   = graphRanked.map(m => m.elo);
+  const maxElo      = Math.max(...eloValues);
+  const minElo      = Math.min(...eloValues);
+  const range       = maxElo - minElo || 1;
+
+  // Check if any graph overrides are active — show legend if so
+  const anyOverride = graphRanked.some((m, i) => eloRanked.findIndex(x => x.id === m.id) !== i);
+  const legendHtml = anyOverride ? `
+    <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-bottom:12px;padding:8px 12px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;gap:12px;">
+      <span style="color:#a0c4d8;font-weight:700;">↕</span>
+      <span>Position adjusted by direct comparison history — overrides ELO where head-to-head evidence is stronger</span>
+    </div>` : '';
+
+  list.innerHTML = legendHtml + graphRanked.map((m, i) => {
+    const pct    = ((m.elo - minElo) / range) * 100;
+    const rc     = i===0?'top1':i===1?'top2':i===2?'top3':'';
+    const medal  = i===0?'#1':i===1?'#2':i===2?'#3':'';
+
+    // Certainty dots
+    const unc    = getUncertainty(m);
+    const settled = 1 - unc;
+    const d1 = settled>0.25?'var(--accent-dim)':'var(--border)';
+    const d2 = settled>0.55?'var(--accent)':'var(--border)';
+    const d3 = settled>0.80?'var(--accent)':'var(--border)';
+    const dots = `<span title="Position certainty: ${Math.round(settled*100)}%" style="display:inline-flex;gap:3px;margin-left:8px;vertical-align:middle;">
+      <span style="width:5px;height:5px;border-radius:50%;background:${d1};display:inline-block;"></span>
+      <span style="width:5px;height:5px;border-radius:50%;background:${d2};display:inline-block;"></span>
+      <span style="width:5px;height:5px;border-radius:50%;background:${d3};display:inline-block;"></span>
+    </span>`;
+
+    // Graph override indicator
+    const eloRank    = eloRanked.findIndex(x => x.id === m.id);
+    const rankDelta  = eloRank - i; // positive = moved UP vs ELO, negative = moved DOWN
+    const overrideTag = (eloRank !== i)
+      ? `<span class="graph-override" title="ELO rank: #${eloRank+1}">↕ #${eloRank+1}→#${i+1} via comparisons</span>`
+      : '';
+
+    // Cycle warning
+    const cycleTag = hasCycleInvolving(m.id)
+      ? `<span title="This title is in a preference cycle — more comparisons will help resolve it" style="color:#c0b86a;font-size:10px;margin-left:4px;">&#8635; cycle</span>`
+      : '';
+
+    // Net wins display
+    const netPref = netPreferenceScore(m.id);
+    const netTag  = m.comparisons > 0
+      ? `<span style="font-size:10px;color:${netPref>=0?'var(--text-muted)':'#c07a6a'};margin-left:6px;">${netPref>0?'+':''}${netPref} net</span>`
+      : '';
+
+    return `
+      <div class="rank-item ${rc}">
+        <div class="rank-num">${medal||(i+1)}</div>
+        <div class="rank-name-cell">
+          <div class="rank-name">${escHtml(m.name)}${dots}${cycleTag}</div>
+          <div style="min-height:14px;">${overrideTag}${netTag}</div>
+        </div>
+        <div class="rank-elo-bar">
+          <div class="elo-bar-bg"><div class="elo-bar-fill" style="width:${pct}%"></div></div>
+        </div>
+        <div>
+          <div class="rank-elo-num">${m.elo}</div>
+          <div class="rank-comps">${m.comparisons||0} rounds</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleExport() {
+  const sorted = getGraphAdjustedRanking();
+  const text = sorted.map((m, i) => `${i+1}. ${m.name}`).join('\n');
+  const box = document.getElementById('export-box');
+  document.getElementById('export-text').textContent = text;
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  navigator.clipboard.writeText(text).then(() => showToast('Rankings copied to clipboard'))
+    .catch(() => showToast('Rankings displayed below'));
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  MODAL / TOAST / UTILS
+// ═══════════════════════════════════════════════════════
+function openModal(title, body, onConfirm) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').textContent  = body;
+  document.getElementById('modal-confirm').onclick   = onConfirm;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+document.getElementById('modal').addEventListener('click', function(e) { if (e.target===this) closeModal(); });
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Init
+renderList();
+updateStats();
+</script>
+</body>
+</html>
