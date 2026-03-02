@@ -114,17 +114,6 @@
   .tier-pill:hover { border-color:var(--border-mid); color:var(--text); }
   .tier-pill .dot { width:7px; height:7px; border-radius:50%; }
 
-  /* SEED PANEL */
-  #seed-panel { background:var(--surface); border:1px solid var(--border); padding:20px 24px; margin-bottom:24px; }
-  #seed-panel h3 { font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--text-label); margin-bottom:10px; }
-  #seed-panel p { font-size:12px; color:var(--text-dim); line-height:1.7; margin-bottom:16px; }
-  .seed-tiers { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
-  @media(max-width:560px){ .seed-tiers{grid-template-columns:1fr 1fr;} }
-  .seed-tier-card { border:1px solid var(--border); padding:12px; cursor:pointer; transition:all 0.15s; text-align:center; position:relative; }
-  .seed-tier-card h4 { font-size:12px; font-weight:700; letter-spacing:1px; margin-bottom:4px; }
-  .seed-tier-card p { font-size:10px; color:var(--text-muted); line-height:1.5; margin:0; }
-  .seed-tier-card .elo-range { font-size:13px; font-weight:900; margin-bottom:6px; }
-
   /* BUTTONS */
   .btn { font-family:Arial,sans-serif; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:11px 26px; border:none; cursor:pointer; transition:all 0.15s; }
   .btn-primary { background:var(--surface3); color:var(--text); border:1px solid var(--border-mid); }
@@ -254,6 +243,41 @@
   .graph-override { font-size:10px; color:#7aaabb; font-style:italic; letter-spacing:0.3px; }
   .rank-name-cell { display:flex; flex-direction:column; justify-content:center; gap:2px; min-width:0; }
   .rank-name-cell .rank-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  /* QUICK SORT */
+  .qs-buckets { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+  @media(max-width:600px){ .qs-buckets{grid-template-columns:1fr;} }
+  .qs-bucket { border:1px solid var(--border); background:var(--surface); border-radius:8px; min-height:160px; padding:12px; transition:border-color 0.15s; }
+  .qs-bucket.drag-over { border-color:var(--accent-dim); background:var(--surface2); }
+  .qs-bucket-header { font-size:11px; font-weight:900; letter-spacing:3px; text-transform:uppercase; margin-bottom:4px; }
+  .qs-bucket-hint { font-size:10px; color:var(--text-muted); margin-bottom:10px; letter-spacing:0.5px; }
+  .qs-bucket-items { display:flex; flex-direction:column; gap:4px; }
+  .qs-card { background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:8px 10px; font-size:12px; font-weight:700; cursor:grab; display:flex; align-items:center; justify-content:space-between; gap:6px; transition:border-color 0.15s; }
+  .qs-card:hover { border-color:var(--border-mid); }
+  .qs-card.dragging { opacity:0.4; }
+  .qs-card-name { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .qs-move-btns { display:flex; gap:3px; flex-shrink:0; }
+  .qs-move-btn { background:none; border:1px solid var(--border); color:var(--text-muted); font-size:9px; font-weight:700; padding:2px 5px; cursor:pointer; border-radius:3px; transition:all 0.1s; letter-spacing:0.5px; }
+  .qs-move-btn:hover { border-color:var(--border-mid); color:var(--text); }
+  .qs-move-btn.hi { color:#6aaac0; border-color:#6aaac033; }
+  .qs-move-btn.hi:hover { border-color:#6aaac0; }
+  .qs-move-btn.md { color:#c0b86a; border-color:#c0b86a33; }
+  .qs-move-btn.md:hover { border-color:#c0b86a; }
+  .qs-move-btn.lo { color:#c07a6a; border-color:#c07a6a33; }
+  .qs-move-btn.lo:hover { border-color:#c07a6a; }
+  .qs-unsorted-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:6px; }
+
+  /* INLINE TIER BUTTONS */
+  .tier-btns { display:flex; gap:3px; flex-shrink:0; }
+  .tier-btn { background:none; border:1px solid var(--border); color:var(--text-muted); font-family:Arial,sans-serif; font-size:9px; font-weight:700; letter-spacing:1px; padding:2px 7px; cursor:pointer; border-radius:3px; transition:all 0.12s; text-transform:uppercase; }
+  .tier-btn:hover { border-color:var(--border-mid); color:var(--text); }
+  .tier-btn.active-high { color:#6aaac0; border-color:#6aaac0; background:rgba(106,170,192,0.08); }
+  .tier-btn.active-mid  { color:#c0b86a; border-color:#c0b86a; background:rgba(192,184,106,0.08); }
+  .tier-btn.active-low  { color:#c07a6a; border-color:#c07a6a; background:rgba(192,122,106,0.08); }
+
+  /* OUTLIER WARNING */
+  .outlier-tag { font-size:10px; color:#e8a040; letter-spacing:0.3px; font-style:italic; }
+  .rank-item.is-outlier { border-left-color:#e8a040 !important; }
 </style>
 </head>
 <body>
@@ -281,27 +305,15 @@
       <div class="stat-cell"><div class="stat-num" id="stat-top" style="font-size:15px;padding-top:6px;">—</div><div class="stat-label">Top Ranked</div></div>
     </div>
 
-    <!-- PRE-SEED EXPLAINER -->
-    <div id="seed-panel">
-      <h3>Pre-Seed Your Library</h3>
-      <p>Before comparing, tag each title with a rough tier. This gives the ELO engine a head start and reduces the number of comparisons needed. Click the dot next to any title to assign it a tier, or use the bulk buttons below.</p>
-      <div class="tier-legend">
-        <div class="tier-pill" onclick="bulkTier('high')"><span class="dot" style="background:#6aaac0"></span>HIGH</div>
-        <div class="tier-pill" onclick="bulkTier('mid')"><span class="dot" style="background:#c0b86a"></span>MID</div>
-        <div class="tier-pill" onclick="bulkTier('low')"><span class="dot" style="background:#c07a6a"></span>LOW</div>
-        <div class="tier-pill" onclick="bulkTier('none')"><span class="dot" style="background:var(--border-mid)"></span>Clear All</div>
-      </div>
-    </div>
-
     <div class="section-title">Add Your Media</div>
 
     <div class="import-grid">
       <div class="import-card" onclick="togglePaste()">
         <div class="card-icon">&#9776;</div>
         <h3>Paste a List</h3>
-        <p>Drop in your entire list at once — one title per line. Works great with Letterboxd, IMDb, or your notes app.</p>
+        <p>Paste your list below. One title per line.</p>
       </div>
-      <div class="import-card" onclick="document.getElementById('manual-input').focus()">
+      <div class="import-card" onclick="toggleManual()">
         <div class="card-icon">&#43;</div>
         <h3>Add One by One</h3>
         <p>Type titles individually and press Enter or click Add.</p>
@@ -311,18 +323,19 @@
     <div id="paste-area" style="display:none;">
       <div class="section-title">Paste Your List</div>
       <textarea id="paste-input" placeholder="Paste one title per line:&#10;&#10;Bohemian Rhapsody&#10;Hotel California&#10;Stairway to Heaven&#10;..."></textarea>
-      <div class="paste-hint">One title per line &nbsp;·&nbsp; Blank lines ignored &nbsp;·&nbsp; Duplicates skipped</div>
       <div class="actions">
         <button class="btn btn-primary" onclick="importPaste()">Import List</button>
         <button class="btn btn-secondary" onclick="togglePaste()">Cancel</button>
       </div>
     </div>
 
-    <div class="section-title">Your Library <span style="font-size:9px;color:var(--text-muted);letter-spacing:1px;font-weight:400;"> — click the dot to set tier</span></div>
-
-    <div class="add-manual">
-      <input type="text" id="manual-input" placeholder="Enter a title..." onkeydown="if(event.key==='Enter')addManual()">
-      <button class="btn btn-primary" onclick="addManual()">Add</button>
+    <div id="manual-area" style="display:none;">
+      <div class="section-title">Add a Title</div>
+      <div class="add-manual">
+        <input type="text" id="manual-input" placeholder="Enter a title..." onkeydown="if(event.key==='Enter')addManual()">
+        <button class="btn btn-primary" onclick="addManual()">Add</button>
+        <button class="btn btn-secondary" onclick="toggleManual()">Cancel</button>
+      </div>
     </div>
 
     <div style="margin-top:14px;">
@@ -373,6 +386,7 @@
   </div>
 
   <!-- ===== RANKINGS ===== -->
+
   <div class="screen" id="screen-rankings">
     <div class="rankings-header">
       <div class="section-title" style="flex:1;margin:0;">Current Rankings</div>
@@ -387,32 +401,6 @@
     </div>
   </div>
 
-</div>
-
-<!-- Tier Assignment Modal -->
-<div class="modal-overlay" id="tier-modal">
-  <div class="modal">
-    <h2 id="tier-modal-title">Set Tier</h2>
-    <p>Where do you expect this title to land overall?</p>
-    <div class="tier-grid" style="grid-template-columns:1fr 1fr 1fr;">
-      <div class="tier-option t-high" onclick="assignTier('high')">
-        <div class="elo-tag" style="color:#6aaac0">1150</div>
-        <h4>HIGH TIER</h4>
-        <p>Above average. Upper half.</p>
-      </div>
-      <div class="tier-option t-mid" onclick="assignTier('mid')">
-        <div class="elo-tag" style="color:#c0b86a">1000</div>
-        <h4>MID TIER</h4>
-        <p>Solid. Somewhere in the middle.</p>
-      </div>
-      <div class="tier-option t-low" onclick="assignTier('low')">
-        <div class="elo-tag" style="color:#c07a6a">850</div>
-        <h4>LOW TIER</h4>
-        <p>Weaker picks. Lower half.</p>
-      </div>
-    </div>
-    <button class="btn btn-secondary" style="width:100%;" onclick="assignTier('none')">No Preference — Keep at 1000</button>
-  </div>
 </div>
 
 <!-- General confirm modal -->
@@ -437,7 +425,6 @@ let media = [];
 let compCount = 0;
 let currentGroup = null;
 let selectionOrder = [];
-let tierModalTarget = null; // id of item being tier-assigned
 
 const K = 32;
 const SLOT_NAMES   = ['Best', '2nd', '3rd', 'Worst'];
@@ -506,10 +493,23 @@ function hasCycleInvolving(id) {
 function getCompositeScore(m, eloMin, eloRange) {
   const eloNorm = eloRange > 0 ? (m.elo - eloMin) / eloRange : 0.5;
   const netPref = netPreferenceScore(m.id);
-  // Net preference bonus: each net win adds ~0.008 to the 0–1 score
-  // Capped at ±0.15 so it can nudge but not dominate
-  const prefBonus = Math.max(-0.15, Math.min(0.15, netPref * 0.008));
-  return eloNorm + prefBonus;
+  // Net preference bonus: each net win adds ~0.018 to the 0–1 score
+  // Capped at ±0.28 so strong H2H records can meaningfully re-order close ELO items
+  const prefBonus = Math.max(-0.28, Math.min(0.28, netPref * 0.018));
+
+  // TRANSITIVE QUALITY BONUS
+  // Count how many items this media has lost to — these are "proof" opponents.
+  // More high-quality losses = this item has been tested at a high level.
+  // We count unique items that have beaten this one and add a small bonus per beater.
+  let beatersCount = 0;
+  for (const beaterId in preferenceGraph) {
+    if (beaterId !== String(m.id) && (preferenceGraph[beaterId][m.id] || 0) > 0) beatersCount++;
+  }
+  // Small bonus for having faced strong competition (even in losses).
+  // Caps at 5 beaters to avoid over-rewarding chronic losers.
+  const transitiveQualityBonus = Math.min(beatersCount, 5) * 0.008;
+
+  return eloNorm + prefBonus + transitiveQualityBonus;
 }
 
 // ── GRAPH-ADJUSTED RANKING ──────────────────────────────────────────
@@ -547,8 +547,8 @@ function getGraphAdjustedRanking() {
       const aWinsOverB = aBeatsB(A.id, B.id);
       const eloDiff    = Math.abs(A.elo - B.elo);
 
-      const softOverride   = bWinsOverA > aWinsOverB && bWinsOverA >= 1 && eloDiff < 180;
-      const strongOverride = bWinsOverA >= 2 && bWinsOverA > aWinsOverB && eloDiff < 280;
+      const softOverride   = bWinsOverA > aWinsOverB && bWinsOverA >= 1 && eloDiff < 220;
+      const strongOverride = bWinsOverA >= 2 && bWinsOverA > aWinsOverB && eloDiff < 350;
 
       if (softOverride || strongOverride) {
         ranked[i]     = B;
@@ -570,53 +570,138 @@ function expectedScore(a, b) {
   return 1 / (1 + Math.pow(10, (b - a) / 400));
 }
 
+// ── TRANSITIVE STRENGTH ─────────────────────────────────────────────
+// Returns a "proof of quality" multiplier for a matchup where `winner`
+// beats `loser`. The idea: if the winner has previously LOST to items
+// that the loser has never beaten, those losses are evidence that the
+// winner is operating at a level the loser hasn't been tested at.
+//
+// Example: X (970 ELO) lost to A, B, C in past rounds.
+//          X then beats Y (1010 ELO).
+//          A, B, C have never beaten Y → they are implicitly above Y.
+//          Therefore X's win over Y is "worth more" — it reveals Y is
+//          weaker than X's prior opponents. Amplify the ELO swing.
+function getTransitiveMultiplier(winnerId, loserId) {
+  // Who has the winner lost to?
+  const winnersLosersTo = [];
+  for (const beater in preferenceGraph) {
+    if (beater !== String(winnerId) && (preferenceGraph[beater][winnerId] || 0) > 0) {
+      winnersLosersTo.push(beater);
+    }
+  }
+  if (winnersLosersTo.length === 0) return 1.0; // winner has no loss history yet
+
+  // Of those, how many has the LOSER never beaten?
+  // These are items definitively above the loser (via transitive chain through winner).
+  let implicitSuperiors = 0;
+  for (const superiorsId of winnersLosersTo) {
+    const loserBeatenSuperior = aBeatsB(loserId, superiorsId);
+    if (loserBeatenSuperior === 0) implicitSuperiors++;
+  }
+
+  if (implicitSuperiors === 0) return 1.0;
+
+  // Multiplier: each implicit superior adds weight, with diminishing returns.
+  // Capped so a single matchup can't go totally wild.
+  const boost = Math.min(implicitSuperiors * 0.20, 0.80); // max +80% K boost
+  return 1.0 + boost;
+}
+
 function applyGroupElo(rankedItems) {
   for (let i = 0; i < rankedItems.length; i++) {
     for (let j = i + 1; j < rankedItems.length; j++) {
       const winner = rankedItems[i];
       const loser  = rankedItems[j];
       const dist   = j - i;
-      const scaledK = K * (dist === 1 ? 0.6 : dist === 2 ? 0.9 : 1.0);
+
+      // Head-to-head history before recording this new result
+      const winnerHasBeatenLoser = aBeatsB(winner.id, loser.id);
+      const loserHasBeatenWinner = aBeatsB(loser.id, winner.id);
+
+      // K scaling by positional distance in this round
+      let scaledK = K * (dist === 1 ? 0.6 : dist === 2 ? 0.9 : 1.0);
+
+      // HEAD-TO-HEAD K MODIFIER
+      if (loserHasBeatenWinner > 0) {
+        scaledK *= 1 + Math.min(loserHasBeatenWinner * 0.35, 1.05);
+      } else if (winnerHasBeatenLoser >= 2) {
+        scaledK *= Math.max(0.4, 1 - (winnerHasBeatenLoser - 1) * 0.15);
+      }
+
+      // TRANSITIVE INFERENCE MODIFIER
+      // Amplify the ELO swing when the winner has beaten tougher competition
+      // than the loser has ever faced. Works on the very FIRST matchup between them.
+      const transitiveMultiplier = getTransitiveMultiplier(winner.id, loser.id);
+      scaledK *= transitiveMultiplier;
+
       const ea = expectedScore(winner.elo, loser.elo);
       const eb = expectedScore(loser.elo, winner.elo);
       winner.elo = Math.round(winner.elo + scaledK * (1 - ea));
       loser.elo  = Math.round(loser.elo  + scaledK * (0 - eb));
+
       // Record in preference graph
       recordPreference(winner.id, loser.id);
     }
   }
   rankedItems.forEach(m => m.comparisons = (m.comparisons || 0) + 1);
+
+  // POST-COMPARISON ELO RECONCILIATION
+  // After each round, check all head-to-head pairs across the full library.
+  // If A has beaten B more times than B has beaten A, but B's ELO is still higher
+  // than A's by more than a threshold, nudge them toward parity.
+  // This ensures accumulated head-to-head evidence bleeds into the ELO scores
+  // rather than only living in the preference graph overlay.
+  reconcileH2HElo();
+}
+
+function reconcileH2HElo() {
+  // For every pair that has faced each other, if one has a clear head-to-head
+  // advantage but their ELOs don't reflect it, apply a small corrective nudge.
+  const ids = media.map(m => m.id);
+  for (let i = 0; i < ids.length; i++) {
+    for (let j = i + 1; j < ids.length; j++) {
+      const idA = ids[i];
+      const idB = ids[j];
+      const aWins = aBeatsB(idA, idB);
+      const bWins = aBeatsB(idB, idA);
+      const totalH2H = aWins + bWins;
+      if (totalH2H < 2) continue; // need at least 2 matchups for meaningful signal
+
+      const mA = media.find(m => m.id === idA);
+      const mB = media.find(m => m.id === idB);
+      if (!mA || !mB) continue;
+
+      // Advantage ratio: how lopsided is the head-to-head?
+      const aAdvantage = (aWins - bWins) / totalH2H; // -1 to +1, positive = A dominates
+      const eloDiff = mA.elo - mB.elo; // positive = A already has higher ELO
+
+      // Only nudge when ELO conflicts with H2H evidence
+      // e.g. B has won more H2H but A still has higher ELO
+      const conflictStrength = -aAdvantage * eloDiff; // positive when they conflict
+      if (conflictStrength > 30) {
+        // ELO and H2H disagree. Nudge proportional to conflict strength and H2H confidence.
+        const h2hConfidence = Math.min(totalH2H / 6, 1.0); // saturates at 6 matchups
+        const nudge = Math.round(conflictStrength * 0.12 * h2hConfidence);
+        // Move both toward resolution: raise the H2H winner, lower the H2H loser
+        if (aAdvantage > 0) {
+          // A wins more H2H but has LOWER ELO — lift A, drop B slightly
+          mA.elo += nudge;
+          mB.elo -= nudge;
+        } else {
+          // B wins more H2H but has LOWER ELO — lift B, drop A slightly
+          mB.elo += nudge;
+          mA.elo -= nudge;
+        }
+      }
+    }
+  }
 }
 
 
 // ═══════════════════════════════════════════════════════
-//  UNCERTAINTY ENGINE v2
+//  UNCERTAINTY ENGINE, CONFIDENCE, GROUP SELECTION
+//  — defined further down with outlier/neighborhood logic
 // ═══════════════════════════════════════════════════════
-function getUncertainty(m) {
-  const n = m.comparisons || 0;
-  const baseFactor = 1 / (1 + n * 0.22);
-  const verifiedVsPeers = m.peerComps || 0;
-  const peerFactor = 1 / (1 + verifiedVsPeers * 0.45);
-
-  const elos = media.map(x => x.elo);
-  const sorted = elos.slice().sort((a,b) => a-b);
-  const median = sorted[Math.floor(sorted.length / 2)];
-  const spread = Math.max(...elos) - Math.min(...elos) || 1;
-  const distFromCenter = Math.abs(m.elo - median) / spread;
-  const divergenceBonus = (n >= 6 && verifiedVsPeers >= 3) ? distFromCenter * 0.3 : 0;
-
-  const topTierCount = Math.max(2, Math.ceil(media.length * 0.20));
-  const rankByElo = [...media].sort((a,b) => b.elo - a.elo);
-  const currentRank = rankByElo.findIndex(x => x.id === m.id);
-  const isTopTier = currentRank < topTierCount;
-  const topTierUncertainty = isTopTier && verifiedVsPeers < 4 ? 0.25 : 0;
-
-  // Graph uncertainty bonus: if this title has intransitive cycles, keep it uncertain
-  const cycleBonus = hasCycleInvolving(m.id) ? 0.15 : 0;
-
-  const raw = baseFactor * peerFactor - divergenceBonus + topTierUncertainty + cycleBonus;
-  return Math.max(0.04, Math.min(1.0, raw));
-}
 
 function scoreGroup(group) {
   const avgUnc = group.reduce((s, m) => s + getUncertainty(m), 0) / group.length;
@@ -632,7 +717,6 @@ function scoreGroup(group) {
   const topTierInGroup = group.filter(m => rankByElo.findIndex(x => x.id === m.id) < topTierCount).length;
   const topTierBonus = topTierInGroup >= 2 ? 1.3 : topTierInGroup === 1 ? 1.05 : 1.0;
 
-  // Bonus for groups where the preference graph says results might be contested
   const graphContest = group.some(m => hasCycleInvolving(m.id)) ? 1.2 : 1.0;
 
   const groupKey = group.map(m => m.id).sort().join(',');
@@ -644,56 +728,6 @@ function scoreGroup(group) {
 const recentGroups = new Set();
 const MAX_RECENT = 16;
 
-function selectGroup() {
-  if (media.length < 4) return null;
-
-  // Phase 1: Bootstrap
-  const unseen = media.filter(m => !m.comparisons);
-  if (unseen.length >= 1) {
-    const rnd = arr => arr.splice(Math.floor(Math.random()*arr.length), 1)[0];
-    const pool = [...unseen];
-    const seed = rnd(pool);
-    const group = [seed];
-    const fillers = [
-      ...pool,
-      ...media.filter(m => m !== seed && (m.comparisons||0) <= 1).sort(()=>Math.random()-0.5),
-      ...media.filter(m => m !== seed && (m.comparisons||0) > 1).sort(()=>Math.random()-0.5)
-    ];
-    while (group.length < 4 && fillers.length) {
-      const next = fillers.shift();
-      if (next && !group.includes(next)) group.push(next);
-    }
-    if (group.length === 4) return group.sort(() => Math.random() - 0.5);
-  }
-
-  // Phase 2+3: Scored candidate selection
-  const CANDIDATES = Math.min(80, media.length * 4);
-  let bestGroup = null, bestScore = -1;
-
-  for (let attempt = 0; attempt < CANDIDATES; attempt++) {
-    const pool = [...media];
-    const group = [];
-    for (let pick = 0; pick < 4 && pool.length > 0; pick++) {
-      const weights = pool.map(m => getUncertainty(m));
-      const total = weights.reduce((s,w) => s+w, 0);
-      let r = Math.random() * total;
-      let chosen = pool[pool.length-1];
-      for (let i = 0; i < pool.length; i++) { r -= weights[i]; if (r <= 0) { chosen = pool[i]; break; } }
-      group.push(chosen);
-      pool.splice(pool.indexOf(chosen), 1);
-    }
-    if (group.length < 4) continue;
-    const score = scoreGroup(group);
-    if (score > bestScore) { bestScore = score; bestGroup = [...group]; }
-  }
-
-  if (!bestGroup) return null;
-  const key = bestGroup.map(m => m.id).sort().join(',');
-  recentGroups.add(key);
-  if (recentGroups.size > MAX_RECENT) recentGroups.delete(recentGroups.values().next().value);
-  return bestGroup.sort(() => Math.random() - 0.5);
-}
-
 function recordPeerComps(rankedItems) {
   for (let i = 0; i < rankedItems.length; i++) {
     let peerFaced = 0;
@@ -702,12 +736,6 @@ function recordPeerComps(rankedItems) {
     }
     rankedItems[i].peerComps = (rankedItems[i].peerComps || 0) + (peerFaced > 0 ? 1 : 0);
   }
-}
-
-function getOverallConfidence() {
-  if (media.length === 0) return 0;
-  const avgUnc = media.reduce((s,m) => s + getUncertainty(m), 0) / media.length;
-  return Math.round(Math.max(0, Math.min(100, (1 - avgUnc) * 115 - 8)));
 }
 
 function getUnsettledCount() {
@@ -723,9 +751,10 @@ function showScreen(name) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('screen-' + name).classList.add('active');
   document.getElementById('nav-' + name).classList.add('active');
-  if (name === 'battle') loadComparison();
-  if (name === 'rankings') renderRankings();
-  if (name === 'import') renderList();
+  if (name === 'battle')     loadComparison();
+  if (name === 'rankings')   renderRankings();
+  if (name === 'import')     renderList();
+  if (name === 'quicksort')  initQuickSort();
 }
 
 
@@ -736,7 +765,7 @@ function addItem(name, tier) {
   name = name.trim();
   if (!name) return false;
   if (media.find(m => m.name.toLowerCase() === name.toLowerCase())) return false;
-  const t = tier || 'none';
+  const t = tier || 'mid';
   media.push({
     name,
     elo: TIER_ELO[t],
@@ -785,29 +814,51 @@ function renderList() {
   const list   = document.getElementById('media-list');
   const empty  = document.getElementById('empty-msg');
   const btn    = document.getElementById('start-comp-btn');
-  if (media.length === 0) { list.style.display='none'; empty.style.display='block'; btn.disabled=true; return; }
+  if (media.length === 0) {
+    list.style.display='none'; empty.style.display='block'; btn.disabled=true;
+    return;
+  }
   empty.style.display = 'none';
   list.style.display  = 'block';
   btn.disabled = media.length < 4;
 
   list.innerHTML = media.map(m => {
-    const t = m.tier || 'none';
-    const tlabel = TIER_LABELS[t] || '';
-    const tcolor = TIER_COLORS[t] || 'var(--border-mid)';
+    const t = m.tier || 'mid';
     return `
       <div class="media-item">
-        <span class="tier-dot tier-${t}" onclick="openTierModal(${m.id})" title="Set tier"></span>
-        <span class="tier-label tier-${t}">${tlabel || '—'}</span>
         <span class="media-item-name">${escHtml(m.name)}</span>
-        <span class="media-item-elo">${m.elo}</span>
+        <div class="tier-btns">
+          <button class="tier-btn ${t==='high'?'active-high':''}" onclick="setTierInline(${m.id},'high')">High</button>
+          <button class="tier-btn ${t==='mid'?'active-mid':''}"  onclick="setTierInline(${m.id},'mid')">Mid</button>
+          <button class="tier-btn ${t==='low'?'active-low':''}"  onclick="setTierInline(${m.id},'low')">Low</button>
+        </div>
         <button class="delete-btn" onclick="removeItem(${m.id})">✕</button>
       </div>`;
   }).join('');
 }
 
+function setTierInline(id, tier) {
+  const m = media.find(x => x.id === id);
+  if (!m) return;
+  m.tier = tier;
+  if (m.comparisons === 0) m.elo = TIER_ELO[tier];
+  renderList();
+}
+
 function togglePaste() {
   const pa = document.getElementById('paste-area');
-  pa.style.display = pa.style.display === 'none' ? 'block' : 'none';
+  const ma = document.getElementById('manual-area');
+  const opening = pa.style.display === 'none';
+  pa.style.display = opening ? 'block' : 'none';
+  if (opening) { ma.style.display = 'none'; }
+}
+
+function toggleManual() {
+  const ma = document.getElementById('manual-area');
+  const pa = document.getElementById('paste-area');
+  const opening = ma.style.display === 'none';
+  ma.style.display = opening ? 'block' : 'none';
+  if (opening) { pa.style.display = 'none'; setTimeout(() => document.getElementById('manual-input').focus(), 50); }
 }
 
 function confirmClear() {
@@ -832,54 +883,6 @@ function updateStats() {
   }
 }
 
-// Bulk tier assignment
-function bulkTier(tier) {
-  media.forEach(m => {
-    // Only set if no tier has been assigned yet, or if clearing
-    if (tier === 'none' || !m.tier || m.tier === 'none') {
-      m.tier = tier;
-      m.elo  = TIER_ELO[tier];
-    }
-  });
-  renderList();
-  updateStats();
-  showToast(tier === 'none' ? 'Tiers cleared' : `Set unseeded titles to ${tier.toUpperCase()}`);
-}
-
-
-// ═══════════════════════════════════════════════════════
-//  TIER MODAL
-// ═══════════════════════════════════════════════════════
-function openTierModal(id) {
-  tierModalTarget = id;
-  const m = media.find(x => x.id === id);
-  if (!m) return;
-  document.getElementById('tier-modal-title').textContent = `Set Tier: ${m.name.length > 30 ? m.name.slice(0,30)+'…' : m.name}`;
-  // Highlight currently selected tier
-  document.querySelectorAll('.tier-option').forEach(el => el.classList.remove('selected'));
-  if (m.tier && m.tier !== 'none') {
-    const map = { top:'t-top', high:'t-high', mid:'t-mid', low:'t-low' };
-    const el = document.querySelector('.tier-option.' + (map[m.tier] || ''));
-    if (el) el.classList.add('selected');
-  }
-  document.getElementById('tier-modal').classList.add('open');
-}
-
-function assignTier(tier) {
-  const m = media.find(x => x.id === tierModalTarget);
-  if (!m) return;
-  // Only update ELO from tier if no comparisons yet — don't overwrite earned ELO
-  if (m.comparisons === 0) m.elo = TIER_ELO[tier];
-  m.tier = tier;
-  tierModalTarget = null;
-  document.getElementById('tier-modal').classList.remove('open');
-  renderList();
-  updateStats();
-}
-
-document.getElementById('tier-modal').addEventListener('click', function(e) {
-  if (e.target === this) { tierModalTarget = null; this.classList.remove('open'); }
-});
 
 
 // ═══════════════════════════════════════════════════════
@@ -1018,18 +1021,24 @@ function renderRankings() {
   const minElo      = Math.min(...eloValues);
   const range       = maxElo - minElo || 1;
 
+  const outlierIds = new Set(getOutliers(7).map(o => o.id));
+  const unverifiedIds = new Set(getUnverifiedTitles().map(o => o.id));
+
   // Check if any graph overrides are active — show legend if so
   const anyOverride = graphRanked.some((m, i) => eloRanked.findIndex(x => x.id === m.id) !== i);
-  const legendHtml = anyOverride ? `
-    <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-bottom:12px;padding:8px 12px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;gap:12px;">
-      <span style="color:#a0c4d8;font-weight:700;">↕</span>
-      <span>Position adjusted by direct comparison history — overrides ELO where head-to-head evidence is stronger</span>
+  const hasOutliers = outlierIds.size > 0;
+  const legendHtml = (anyOverride || hasOutliers) ? `
+    <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-bottom:12px;padding:8px 12px;border:1px solid var(--border);background:var(--surface);display:flex;flex-wrap:wrap;align-items:center;gap:12px;">
+      ${anyOverride ? '<span><span style="color:#a0c4d8;font-weight:700;">↕</span> Position adjusted by direct comparison history</span>' : ''}
+      ${hasOutliers ? `<span><span style="color:#e8a040;font-weight:700;">⚠</span> ${outlierIds.size} title${outlierIds.size!==1?'s':''} flagged as possible outlier — targeted matchups queued</span>` : ''}
     </div>` : '';
 
   list.innerHTML = legendHtml + graphRanked.map((m, i) => {
     const pct    = ((m.elo - minElo) / range) * 100;
     const rc     = i===0?'top1':i===1?'top2':i===2?'top3':'';
     const medal  = i===0?'#1':i===1?'#2':i===2?'#3':'';
+    const isOutlier = outlierIds.has(m.id);
+    const isUnverified = unverifiedIds.has(m.id);
 
     // Certainty dots
     const unc    = getUncertainty(m);
@@ -1045,9 +1054,18 @@ function renderRankings() {
 
     // Graph override indicator
     const eloRank    = eloRanked.findIndex(x => x.id === m.id);
-    const rankDelta  = eloRank - i; // positive = moved UP vs ELO, negative = moved DOWN
     const overrideTag = (eloRank !== i)
       ? `<span class="graph-override" title="ELO rank: #${eloRank+1}">↕ #${eloRank+1}→#${i+1} via comparisons</span>`
+      : '';
+
+    // Outlier warning
+    const outlierTag = isOutlier
+      ? `<span class="outlier-tag" title="ELO and comparison history strongly disagree on this title's position — targeted rounds queued">⚠ possible outlier</span>`
+      : '';
+
+    // Neighborhood unverified
+    const unverifiedTag = (!isOutlier && isUnverified && m.comparisons >= 2)
+      ? `<span style="font-size:10px;color:var(--text-muted);font-style:italic;" title="Has not yet beaten any higher-ranked title — position unconfirmed">↑ needs upward win</span>`
       : '';
 
     // Cycle warning
@@ -1062,11 +1080,11 @@ function renderRankings() {
       : '';
 
     return `
-      <div class="rank-item ${rc}">
+      <div class="rank-item ${rc}${isOutlier?' is-outlier':''}">
         <div class="rank-num">${medal||(i+1)}</div>
         <div class="rank-name-cell">
           <div class="rank-name">${escHtml(m.name)}${dots}${cycleTag}</div>
-          <div style="min-height:14px;">${overrideTag}${netTag}</div>
+          <div style="min-height:14px;">${outlierTag}${unverifiedTag}${overrideTag}${netTag}</div>
         </div>
         <div class="rank-elo-bar">
           <div class="elo-bar-bg"><div class="elo-bar-fill" style="width:${pct}%"></div></div>
@@ -1113,6 +1131,347 @@ function showToast(msg) {
 
 function escHtml(str) {
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════════════════
+//  QUICK SORT
+// ═══════════════════════════════════════════════════════
+let qsDraggingId = null;
+
+function initQuickSort() {
+  const unsorted = document.getElementById('qs-unsorted');
+  const hiItems  = document.getElementById('qs-high-items');
+  const midItems = document.getElementById('qs-mid-items');
+  const loItems  = document.getElementById('qs-low-items');
+  unsorted.innerHTML = '';
+  hiItems.innerHTML  = '';
+  midItems.innerHTML = '';
+  loItems.innerHTML  = '';
+
+  // Split: already-tiered go to their buckets, untiered go to unsorted
+  media.forEach(m => {
+    const tier = (m.tier && m.tier !== 'none') ? m.tier : null;
+    const card = makeQsCard(m);
+    if (tier === 'high' || tier === 'top') hiItems.appendChild(card);
+    else if (tier === 'mid')               midItems.appendChild(card);
+    else if (tier === 'low')               loItems.appendChild(card);
+    else                                   unsorted.appendChild(card);
+  });
+
+  updateQsProgress();
+}
+
+function makeQsCard(m) {
+  const div = document.createElement('div');
+  div.className = 'qs-card';
+  div.draggable = true;
+  div.dataset.id = m.id;
+  div.innerHTML = `
+    <span class="qs-card-name" title="${escHtml(m.name)}">${escHtml(m.name)}</span>
+    <div class="qs-move-btns">
+      <button class="qs-move-btn hi" onclick="qsAssign(${m.id},'high')">▲</button>
+      <button class="qs-move-btn md" onclick="qsAssign(${m.id},'mid')">●</button>
+      <button class="qs-move-btn lo" onclick="qsAssign(${m.id},'low')">▼</button>
+    </div>`;
+  div.addEventListener('dragstart', e => {
+    qsDraggingId = m.id;
+    div.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  div.addEventListener('dragend', () => div.classList.remove('dragging'));
+  return div;
+}
+
+function qsDrop(e, tier) {
+  e.preventDefault();
+  if (qsDraggingId == null) return;
+  qsAssign(qsDraggingId, tier);
+  qsDraggingId = null;
+}
+
+function qsAssign(id, tier) {
+  // Remove card from wherever it currently lives
+  document.querySelectorAll(`.qs-card[data-id="${id}"]`).forEach(el => el.remove());
+  const m = media.find(x => x.id == id);
+  if (!m) return;
+  const card = makeQsCard(m);
+  const containers = { high: 'qs-high-items', mid: 'qs-mid-items', low: 'qs-low-items' };
+  document.getElementById(containers[tier]).appendChild(card);
+  updateQsProgress();
+}
+
+function updateQsProgress() {
+  const total   = media.length;
+  const sorted  = document.querySelectorAll('#qs-high-items .qs-card, #qs-mid-items .qs-card, #qs-low-items .qs-card').length;
+  const unsorted = total - sorted;
+  const pct = total > 0 ? Math.round((sorted / total) * 100) : 0;
+  document.getElementById('qs-progress-row').textContent =
+    `${sorted} / ${total} sorted (${pct}%) — ${unsorted > 0 ? unsorted + ' remaining' : 'all done!'}`;
+  document.getElementById('qs-apply-btn').disabled = (sorted === 0);
+
+  // Show/hide unsorted section header
+  const sec = document.getElementById('qs-unsorted-section');
+  sec.style.display = unsorted > 0 ? 'block' : 'none';
+}
+
+function applyQuickSort() {
+  // Read assignments from the DOM and apply ELO seeds
+  const assignments = { high: [], mid: [], low: [] };
+  ['high','mid','low'].forEach(tier => {
+    document.querySelectorAll(`#qs-${tier}-items .qs-card`).forEach(card => {
+      assignments[tier].push(Number(card.dataset.id));
+    });
+  });
+
+  // Spread ELOs within each bucket so items aren't all identical
+  // High: 1080–1220, Mid: 950–1050, Low: 780–940
+  const ranges = {
+    high: { min: 1080, max: 1220 },
+    mid:  { min: 950,  max: 1050 },
+    low:  { min: 780,  max: 940  }
+  };
+
+  ['high','mid','low'].forEach(tier => {
+    const ids = assignments[tier];
+    if (!ids.length) return;
+    const { min, max } = ranges[tier];
+    ids.forEach((id, i) => {
+      const m = media.find(x => x.id === id);
+      if (!m) return;
+      // Spread evenly across the tier's ELO range
+      const spread = ids.length > 1 ? (max - min) * (i / (ids.length - 1)) : (max - min) / 2;
+      m.elo  = Math.round(min + spread);
+      m.tier = tier;
+    });
+  });
+
+  // Anything still unsorted stays at 1000
+  showToast('Seeding applied — starting comparisons');
+  showScreen('battle');
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  OUTLIER DETECTION
+// ═══════════════════════════════════════════════════════
+
+// Returns titles where graph-implied rank and ELO rank conflict by > threshold positions
+function getOutliers(threshold = 7) {
+  if (media.length < 6) return [];
+  const eloRanked   = [...media].sort((a, b) => b.elo - a.elo);
+  // Graph-implied rank: sort by net preference score descending
+  const graphRanked = [...media].sort((a, b) => netPreferenceScore(b.id) - netPreferenceScore(a.id));
+
+  return media.filter(m => {
+    const eloRank   = eloRanked.findIndex(x => x.id === m.id);
+    const graphRank = graphRanked.findIndex(x => x.id === m.id);
+    // Only flag if the title has enough comparisons to have a meaningful graph position
+    return m.comparisons >= 3 && Math.abs(eloRank - graphRank) >= threshold;
+  });
+}
+
+// Returns the direction of the conflict: 'too_low' means ELO undervalues the title
+function getOutlierDirection(m) {
+  const eloRanked   = [...media].sort((a, b) => b.elo - a.elo);
+  const graphRanked = [...media].sort((a, b) => netPreferenceScore(b.id) - netPreferenceScore(a.id));
+  const eloRank     = eloRanked.findIndex(x => x.id === m.id);
+  const graphRank   = graphRanked.findIndex(x => x.id === m.id);
+  return graphRank < eloRank ? 'too_low' : 'too_high';
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  NEIGHBORHOOD VERIFICATION
+// ═══════════════════════════════════════════════════════
+
+// A title is "neighborhood verified" if it has at least one recorded win
+// against a title currently ranked above it in the ELO list.
+function hasUpwardWin(m) {
+  const eloRanked = [...media].sort((a, b) => b.elo - a.elo);
+  const myRank    = eloRanked.findIndex(x => x.id === m.id);
+  // Check if this title has beaten anyone ranked above it
+  for (let r = 0; r < myRank; r++) {
+    if (aBeatsB(m.id, eloRanked[r].id) > 0) return true;
+  }
+  return false;
+}
+
+// Returns titles that have enough comparisons to be "settling" but lack an upward win
+function getUnverifiedTitles() {
+  return media.filter(m => {
+    const rank = [...media].sort((a, b) => b.elo - a.elo).findIndex(x => x.id === m.id);
+    // Bottom-ranked title can't have an upward win by definition — skip it
+    if (rank === 0) return false;
+    return m.comparisons >= 2 && !hasUpwardWin(m);
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  UPDATED UNCERTAINTY — factors in outlier + neighborhood
+// ═══════════════════════════════════════════════════════
+// (Replaces the existing getUncertainty — we redefine it here at the bottom
+//  so it shadows the earlier definition)
+function getUncertainty(m) {
+  const n = m.comparisons || 0;
+  const baseFactor = 1 / (1 + n * 0.22);
+  const verifiedVsPeers = m.peerComps || 0;
+  const peerFactor = 1 / (1 + verifiedVsPeers * 0.45);
+
+  const elos = media.map(x => x.elo);
+  const sorted = elos.slice().sort((a,b) => a-b);
+  const median = sorted[Math.floor(sorted.length / 2)];
+  const spread = Math.max(...elos) - Math.min(...elos) || 1;
+  const distFromCenter = Math.abs(m.elo - median) / spread;
+  const divergenceBonus = (n >= 6 && verifiedVsPeers >= 3) ? distFromCenter * 0.3 : 0;
+
+  const topTierCount = Math.max(2, Math.ceil(media.length * 0.20));
+  const rankByElo = [...media].sort((a,b) => b.elo - a.elo);
+  const currentRank = rankByElo.findIndex(x => x.id === m.id);
+  const isTopTier = currentRank < topTierCount;
+  const topTierUncertainty = isTopTier && verifiedVsPeers < 4 ? 0.25 : 0;
+
+  const cycleBonus = hasCycleInvolving(m.id) ? 0.15 : 0;
+
+  // OPTION 1: Outlier penalty — ELO and graph rank strongly disagree
+  const outliers = getOutliers(7);
+  const outlierBonus = outliers.some(o => o.id === m.id) ? 0.30 : 0;
+
+  // OPTION 2: Neighborhood verification — unsettled if no upward win yet
+  const neighborBonus = (n >= 2 && !hasUpwardWin(m) && currentRank > 0) ? 0.20 : 0;
+
+  const raw = baseFactor * peerFactor - divergenceBonus + topTierUncertainty + cycleBonus
+              + outlierBonus + neighborBonus;
+  return Math.max(0.04, Math.min(1.0, raw));
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  UPDATED CONFIDENCE — penalized by active outliers
+// ═══════════════════════════════════════════════════════
+function getOverallConfidence() {
+  if (media.length === 0) return 0;
+  const avgUnc = media.reduce((s,m) => s + getUncertainty(m), 0) / media.length;
+  let conf = Math.round(Math.max(0, Math.min(100, (1 - avgUnc) * 115 - 8)));
+
+  // Hard cap: each active outlier pulls max confidence down
+  const outlierCount = getOutliers(7).length;
+  if (outlierCount > 0) conf = Math.min(conf, 78 - outlierCount * 8);
+
+  // Also cap if many titles lack neighborhood verification
+  const unverified = getUnverifiedTitles().length;
+  const unverifiedPct = media.length > 0 ? unverified / media.length : 0;
+  if (unverifiedPct > 0.4) conf = Math.min(conf, 70);
+
+  return Math.max(0, conf);
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  UPDATED SELECT GROUP — bracket challenges for outliers
+// ═══════════════════════════════════════════════════════
+function selectGroup() {
+  if (media.length < 4) return null;
+
+  // OPTION 3: Bracket challenge — if there's a confirmed outlier, build a
+  // targeted group pitting it against titles ranked 8–20 positions above its
+  // current ELO rank. This forces resolution instead of waiting randomly.
+  const outliers = getOutliers(7);
+  if (outliers.length > 0) {
+    const target = outliers[0]; // tackle the worst outlier first
+    const eloRanked = [...media].sort((a, b) => b.elo - a.elo);
+    const targetEloRank = eloRanked.findIndex(x => x.id === target.id);
+    const dir = getOutlierDirection(target);
+
+    // Pick challengers from the zone above the target's ELO rank
+    const challengeZoneStart = Math.max(0, targetEloRank - 20);
+    const challengeZoneEnd   = Math.max(0, targetEloRank - 1);
+    const challengers = eloRanked
+      .slice(challengeZoneStart, challengeZoneEnd + 1)
+      .filter(m => m.id !== target.id)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
+
+    if (challengers.length === 3) {
+      const group = [target, ...challengers].sort(() => Math.random() - 0.5);
+      const key = group.map(m => m.id).sort().join(',');
+      // Don't repeat the exact same bracket challenge
+      if (!recentGroups.has(key)) {
+        recentGroups.add(key);
+        if (recentGroups.size > MAX_RECENT) recentGroups.delete(recentGroups.values().next().value);
+        return group;
+      }
+    }
+  }
+
+  // OPTION 3b: Neighborhood challenge — title with no upward win gets paired
+  // with titles just above it in the ranking
+  const unverified = getUnverifiedTitles();
+  if (unverified.length > 0) {
+    const target = unverified.sort((a, b) => b.comparisons - a.comparisons)[0];
+    const eloRanked = [...media].sort((a, b) => b.elo - a.elo);
+    const targetRank = eloRanked.findIndex(x => x.id === target.id);
+    const above = eloRanked
+      .slice(Math.max(0, targetRank - 6), targetRank)
+      .filter(m => m.id !== target.id)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
+
+    if (above.length === 3) {
+      const group = [target, ...above].sort(() => Math.random() - 0.5);
+      const key = group.map(m => m.id).sort().join(',');
+      if (!recentGroups.has(key)) {
+        recentGroups.add(key);
+        if (recentGroups.size > MAX_RECENT) recentGroups.delete(recentGroups.values().next().value);
+        return group;
+      }
+    }
+  }
+
+  // Phase 1: Bootstrap
+  const unseen = media.filter(m => !m.comparisons);
+  if (unseen.length >= 1) {
+    const rnd = arr => arr.splice(Math.floor(Math.random()*arr.length), 1)[0];
+    const pool = [...unseen];
+    const seed = rnd(pool);
+    const group = [seed];
+    const fillers = [
+      ...pool,
+      ...media.filter(m => m !== seed && (m.comparisons||0) <= 1).sort(()=>Math.random()-0.5),
+      ...media.filter(m => m !== seed && (m.comparisons||0) > 1).sort(()=>Math.random()-0.5)
+    ];
+    while (group.length < 4 && fillers.length) {
+      const next = fillers.shift();
+      if (next && !group.includes(next)) group.push(next);
+    }
+    if (group.length === 4) return group.sort(() => Math.random() - 0.5);
+  }
+
+  // Phase 2+3: Scored candidate selection
+  const CANDIDATES = Math.min(80, media.length * 4);
+  let bestGroup = null, bestScore = -1;
+
+  for (let attempt = 0; attempt < CANDIDATES; attempt++) {
+    const pool = [...media];
+    const group = [];
+    for (let pick = 0; pick < 4 && pool.length > 0; pick++) {
+      const weights = pool.map(m => getUncertainty(m));
+      const total = weights.reduce((s,w) => s+w, 0);
+      let r = Math.random() * total;
+      let chosen = pool[pool.length-1];
+      for (let i = 0; i < pool.length; i++) { r -= weights[i]; if (r <= 0) { chosen = pool[i]; break; } }
+      group.push(chosen);
+      pool.splice(pool.indexOf(chosen), 1);
+    }
+    if (group.length < 4) continue;
+    const score = scoreGroup(group);
+    if (score > bestScore) { bestScore = score; bestGroup = [...group]; }
+  }
+
+  if (!bestGroup) return null;
+  const key = bestGroup.map(m => m.id).sort().join(',');
+  recentGroups.add(key);
+  if (recentGroups.size > MAX_RECENT) recentGroups.delete(recentGroups.values().next().value);
+  return bestGroup.sort(() => Math.random() - 0.5);
 }
 
 // Init
