@@ -275,9 +275,122 @@
   .tier-btn.active-mid  { color:#c0b86a; border-color:#c0b86a; background:rgba(192,184,106,0.08); }
   .tier-btn.active-low  { color:#c07a6a; border-color:#c07a6a; background:rgba(192,122,106,0.08); }
 
+  /* RANK SUB-NAV */
+  .rank-subnav { display: flex; gap: 2px; margin-bottom: 28px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+  .subnav-btn { background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); padding: 10px 20px; font-family: Arial, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.15s; margin-bottom: -1px; }
+  .subnav-btn:hover { color: var(--text-dim); }
+  .subnav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* MODE CARDS - compact, no description */
+  .mode-card p { display: none; }
+  .mode-icon { font-size: 22px; margin-bottom: 12px; line-height: 1; color: var(--text-dim); }
+
   /* OUTLIER WARNING */
   .outlier-tag { font-size:10px; color:#e8a040; letter-spacing:0.3px; font-style:italic; }
   .rank-item.is-outlier { border-left-color:#e8a040 !important; }
+
+  /* MODE SELECTOR HOME */
+  .mode-hero { text-align: center; padding: 48px 0 36px; }
+  .mode-hero h2 { font-size: 11px; font-weight: 700; letter-spacing: 5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
+  .mode-hero h1 { font-size: 28px; font-weight: 900; color: var(--text); letter-spacing: -0.5px; margin-bottom: 10px; }
+  .mode-hero p { font-size: 14px; color: var(--text-dim); line-height: 1.7; max-width: 440px; margin: 0 auto; }
+  .mode-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; }
+  @media(max-width: 700px) { .mode-grid { grid-template-columns: 1fr; } }
+  .mode-card { border: 1px solid var(--border); background: var(--surface); padding: 32px 24px 28px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; text-align: center; }
+  .mode-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); transform: scaleX(0); transition: transform 0.25s; }
+  .mode-card:hover { border-color: var(--border-mid); background: var(--surface2); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  .mode-card:hover::before { transform: scaleX(1); }
+  .mode-card.mode-rank::before { background: var(--accent); }
+  .mode-card.mode-winner::before { background: var(--gold); }
+  .mode-card.mode-rerank::before { background: #8a7ac0; }
+  .mode-icon { font-size: 36px; margin-bottom: 18px; line-height: 1; }
+  .mode-card h3 { font-size: 14px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; color: var(--text); }
+  .mode-card p { font-size: 12px; color: var(--text-dim); line-height: 1.7; margin-bottom: 18px; }
+  .mode-tag { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 3px 10px; border: 1px solid var(--border); color: var(--text-muted); border-radius: 3px; }
+  .mode-card.mode-rank .mode-tag { border-color: var(--accent-dim); color: var(--accent); }
+  .mode-card.mode-winner .mode-tag { border-color: rgba(212,168,78,0.4); color: var(--gold); }
+  .mode-card.mode-rerank .mode-tag { border-color: rgba(138,122,192,0.4); color: #a090d8; }
+
+  /* TOURNAMENT / FIND A WINNER */
+  .matchup-container { max-width: 560px; margin: 0 auto; }
+  .matchup-vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; margin-bottom: 16px; }
+  .matchup-card { border: 1px solid var(--border); background: var(--surface); padding: 28px 20px; text-align: center; cursor: pointer; transition: all 0.2s; }
+  .matchup-card:hover { border-color: var(--border-mid); background: var(--surface2); }
+  .matchup-card.winner-pick { border-color: var(--gold); background: rgba(212,168,78,0.08); }
+  .matchup-card h3 { font-size: 16px; font-weight: 900; line-height: 1.3; color: var(--text); }
+  .matchup-card p { font-size: 10px; color: var(--text-muted); margin-top: 6px; letter-spacing: 1px; }
+  .vs-divider { font-size: 11px; font-weight: 900; letter-spacing: 3px; color: var(--text-muted); text-align: center; }
+  .bracket-track { margin-top: 28px; }
+  .bracket-track-title { font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 12px; }
+  .bracket-track-title::after { content:''; flex:1; height:1px; background:var(--border); }
+  .bracket-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .bracket-pill { font-size: 11px; padding: 4px 12px; border: 1px solid var(--border); color: var(--text-muted); background: var(--surface); transition: all 0.15s; }
+  .bracket-pill.alive { border-color: var(--border-mid); color: var(--text-dim); }
+  .bracket-pill.eliminated { text-decoration: line-through; opacity: 0.35; }
+  .bracket-pill.champion { border-color: var(--gold); color: var(--gold); background: rgba(212,168,78,0.1); font-weight: 700; }
+  .tournament-winner-screen { text-align: center; padding: 60px 20px; }
+  .trophy-icon { font-size: 64px; margin-bottom: 20px; animation: trophyPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
+  @keyframes trophyPop { from { transform: scale(0.3) rotate(-15deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+  .winner-name { font-size: 26px; font-weight: 900; color: var(--gold); margin-bottom: 10px; letter-spacing: -0.5px; }
+  .winner-sub { font-size: 13px; color: var(--text-dim); margin-bottom: 32px; }
+  .tour-progress-track { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 6px; }
+  .tour-progress-fill { height: 100%; background: var(--gold); transition: width 0.5s ease; }
+  .tour-progress-label { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; text-align: center; margin-bottom: 20px; }
+  .round-badge { font-size: 11px; font-weight: 700; letter-spacing: 2px; padding: 6px 14px; border: 1px solid rgba(212,168,78,0.3); background: rgba(212,168,78,0.07); color: var(--gold); }
+  .tour-setup-intro { font-size: 13px; color: var(--text-dim); line-height: 1.7; margin-bottom: 28px; padding: 16px 20px; border: 1px solid var(--border); background: var(--surface); }
+
+  /* RE-RANK */
+  .rerank-intro { font-size: 13px; color: var(--text-dim); line-height: 1.7; margin-bottom: 24px; padding: 16px 20px; border: 1px solid var(--border); background: var(--surface); }
+  .rerank-original-list { display: flex; flex-direction: column; gap: 2px; max-height: 360px; overflow-y: auto; margin-bottom: 24px; }
+  .rerank-original-list::-webkit-scrollbar { width: 3px; }
+  .rerank-original-list::-webkit-scrollbar-thumb { background: var(--border-mid); }
+  .rerank-original-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--surface); border: 1px solid var(--border); font-size: 13px; }
+  .rerank-rank-num { font-size: 16px; font-weight: 900; color: var(--text-muted); width: 30px; text-align: right; flex-shrink: 0; }
+  .rerank-rank-num.pos1 { color: var(--gold); }
+  .rerank-rank-num.pos2 { color: var(--silver); }
+  .rerank-rank-num.pos3 { color: var(--bronze); }
+  .rerank-item-name { flex: 1; font-weight: 600; }
+  .rerank-card-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; max-width: 560px; margin-left: auto; margin-right: auto; }
+  .rerank-card { border: 1px solid var(--border); background: var(--surface); padding: 22px 18px; cursor: pointer; transition: all 0.2s; text-align: center; }
+  .rerank-card:hover { border-color: var(--border-mid); background: var(--surface2); }
+  .rerank-card.picked { border-color: #8a7ac0; background: rgba(138,122,192,0.08); }
+  .rerank-card h4 { font-size: 14px; font-weight: 700; line-height: 1.3; color: var(--text); }
+  .rerank-card .orig-rank { font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; }
+  .rerank-phase-label { font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); text-align: center; margin-bottom: 20px; }
+  .change-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: var(--surface); border: 1px solid var(--border); margin-bottom: 2px; font-size: 13px; }
+  .change-item.moved-up { border-left: 2px solid #6ab87a; }
+  .change-item.moved-down { border-left: 2px solid var(--red); }
+  .change-item.unchanged { border-left: 2px solid var(--border); }
+  .change-arrow { font-size: 11px; font-weight: 700; min-width: 60px; text-align: right; flex-shrink: 0; }
+  .change-arrow.up { color: #6ab87a; }
+  .change-arrow.down { color: #c07a6a; }
+  .change-arrow.same { color: var(--text-muted); }
+  .change-name { flex: 1; font-weight: 600; }
+  .result-summary { text-align: center; padding: 24px; border: 1px solid var(--border); background: var(--surface); margin-bottom: 24px; }
+  .result-summary .big-num { font-size: 48px; font-weight: 900; color: #a090d8; letter-spacing: -2px; line-height: 1; margin-bottom: 6px; }
+  .result-summary p { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+  .rerank-progress-row { display: flex; align-items: center; margin-bottom: 20px; gap: 12px; }
+  .rerank-progress-track { flex: 1; height: 2px; background: var(--border); }
+  .rerank-progress-fill { height: 100%; background: #8a7ac0; transition: width 0.5s ease; }
+  .rerank-progress-text { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; white-space: nowrap; }
+  .purple-badge { font-size: 11px; font-weight: 700; letter-spacing: 2px; padding: 6px 14px; border: 1px solid rgba(138,122,192,0.3); background: rgba(138,122,192,0.07); color: #a090d8; }
+  .back-link { background: none; border: none; color: var(--text-muted); font-family: Arial, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; padding: 0; transition: color 0.15s; }
+  .back-link:hover { color: var(--text-dim); }
+
+  /* HOME SCREEN */
+  .mode-hero { text-align: center; padding: 48px 0 28px; }
+  .mode-hero h1 { font-size: 24px; font-weight: 900; color: var(--text); letter-spacing: -0.5px; }
+
+  /* MODE SCREEN HEADERS */
+  .mode-screen-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+  .mode-screen-label { font-size: 12px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; flex: 1; }
+  .rank-label { color: var(--accent); }
+  .winner-label { color: var(--gold); }
+  .rerank-label { color: #a090d8; }
+
+  /* TROPHY ICON - text based */
+  .trophy-icon { font-size: 28px; font-weight: 900; color: var(--gold); margin-bottom: 14px; letter-spacing: -1px; }
+
 </style>
 </head>
 <body>
@@ -288,116 +401,338 @@
     <span class="logo-tag">ELO</span>
   </div>
   <nav>
-    <button class="nav-btn active" onclick="showScreen('import')" id="nav-import">Library</button>
-    <button class="nav-btn" onclick="showScreen('battle')" id="nav-battle">Compare</button>
-    <button class="nav-btn" onclick="showScreen('rankings')" id="nav-rankings">Rankings</button>
+    <button class="nav-btn active" onclick="showScreen('home')" id="nav-home">Home</button>
+    <button class="nav-btn" onclick="showScreen('rank')" id="nav-rank">Rank</button>
+    <button class="nav-btn" onclick="showScreen('tournament')" id="nav-tournament">Find Winner</button>
+    <button class="nav-btn" onclick="showScreen('rerank')" id="nav-rerank">Re-Rank</button>
   </nav>
 </div>
 
 <div id="app">
 
-  <!-- ===== LIBRARY ===== -->
-  <div class="screen active" id="screen-import">
-
-    <div class="stats-bar">
-      <div class="stat-cell"><div class="stat-num" id="stat-count">0</div><div class="stat-label">Titles</div></div>
-      <div class="stat-cell"><div class="stat-num" id="stat-comps">0</div><div class="stat-label">Comparisons</div></div>
-      <div class="stat-cell"><div class="stat-num" id="stat-top" style="font-size:15px;padding-top:6px;">—</div><div class="stat-label">Top Ranked</div></div>
+  <!-- ===== HOME ===== -->
+  <div class="screen active" id="screen-home">
+    <div class="mode-hero">
+      <h1>What do you want to do?</h1>
     </div>
-
-    <div class="section-title">Add Your Media</div>
-
-    <div class="import-grid">
-      <div class="import-card" onclick="togglePaste()">
-        <div class="card-icon">&#9776;</div>
-        <h3>Paste a List</h3>
-        <p>Paste your list below. One title per line.</p>
+    <div class="mode-grid">
+      <div class="mode-card mode-rank" onclick="goToMode('rank')">
+        <div class="mode-icon">&#9776;</div>
+        <h3>Rank</h3>
+        <span class="mode-tag">Full ordered list</span>
       </div>
-      <div class="import-card" onclick="toggleManual()">
-        <div class="card-icon">&#43;</div>
-        <h3>Add One by One</h3>
-        <p>Type titles individually and press Enter or click Add.</p>
+      <div class="mode-card mode-winner" onclick="goToMode('tournament')">
+        <div class="mode-icon">&#9654;</div>
+        <h3>Find a Winner</h3>
+        <span class="mode-tag">One champion</span>
       </div>
-    </div>
-
-    <div id="paste-area" style="display:none;">
-      <div class="section-title">Paste Your List</div>
-      <textarea id="paste-input" placeholder="Paste one title per line:&#10;&#10;Bohemian Rhapsody&#10;Hotel California&#10;Stairway to Heaven&#10;..."></textarea>
-      <div class="actions">
-        <button class="btn btn-primary" onclick="importPaste()">Import List</button>
-        <button class="btn btn-secondary" onclick="togglePaste()">Cancel</button>
+      <div class="mode-card mode-rerank" onclick="goToMode('rerank')">
+        <div class="mode-icon">&#8635;</div>
+        <h3>Re-Rank</h3>
+        <span class="mode-tag">Challenge existing</span>
       </div>
-    </div>
-
-    <div id="manual-area" style="display:none;">
-      <div class="section-title">Add a Title</div>
-      <div class="add-manual">
-        <input type="text" id="manual-input" placeholder="Enter a title..." onkeydown="if(event.key==='Enter')addManual()">
-        <button class="btn btn-primary" onclick="addManual()">Add</button>
-        <button class="btn btn-secondary" onclick="toggleManual()">Cancel</button>
-      </div>
-    </div>
-
-    <div style="margin-top:14px;">
-      <div class="empty-state" id="empty-msg">
-        <div class="big-icon">&#9654;</div>
-        <p>Your library is empty.<br>Paste a list or add titles above to get started.</p>
-      </div>
-      <div class="media-list" id="media-list" style="display:none;"></div>
-    </div>
-
-    <div class="actions">
-      <button class="btn btn-primary" id="start-comp-btn" onclick="startComp()" disabled>Start Comparing</button>
-      <button class="btn btn-secondary" onclick="confirmClear()">Clear All</button>
     </div>
   </div>
 
-  <!-- ===== COMPARE ===== -->
-  <div class="screen" id="screen-battle">
-    <div class="comp-header">
-      <h2>Comparison Round</h2>
-      <p>Rank these <strong>4 titles</strong> from best to worst by clicking them in order.</p>
-      <div class="progress-row">
-        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-        <div class="progress-text" id="progress-text">0 comparisons</div>
+  <!-- ===== RANK: LIBRARY + COMPARE + RANKINGS ===== -->
+  <div class="screen" id="screen-rank">
+    <div class="mode-screen-header">
+      <div class="mode-screen-label rank-label">&#9776; Rank</div>
+    </div>
+
+    <!-- Library section -->
+    <div id="rank-library-section">
+      <div class="stats-bar">
+        <div class="stat-cell"><div class="stat-num" id="rank-stat-count">0</div><div class="stat-label">Titles</div></div>
+        <div class="stat-cell"><div class="stat-num" id="rank-stat-comps">0</div><div class="stat-label">Comparisons</div></div>
+        <div class="stat-cell"><div class="stat-num" id="rank-stat-top" style="font-size:15px;padding-top:6px;">-</div><div class="stat-label">Top Ranked</div></div>
       </div>
-      <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-top:8px;" id="conf-pct-label"></div>
-    </div>
 
-    <div class="comp-instruction">
-      Click in order: <span>#1 Best</span> &rarr; <span>#2</span> &rarr; <span>#3</span> &rarr; <span>#4 Worst</span> &nbsp;&middot;&nbsp; Click a selected title to deselect it
-    </div>
+      <div class="section-title">Library</div>
 
-    <div class="quad-grid" id="quad-grid"></div>
-
-    <div class="submit-row">
-      <div class="submit-status" id="submit-status">Select <span class="count">4</span> titles to rank</div>
-      <div class="rank-slots">
-        <div class="slot-pip" id="pip-1">1</div>
-        <div class="slot-pip" id="pip-2">2</div>
-        <div class="slot-pip" id="pip-3">3</div>
-        <div class="slot-pip" id="pip-4">4</div>
+      <div class="import-grid">
+        <div class="import-card" onclick="toggleRankPaste()">
+          <div class="card-icon">&#9782;</div>
+          <h3>Paste a List</h3>
+        </div>
+        <div class="import-card" onclick="toggleRankManual()">
+          <div class="card-icon">&#43;</div>
+          <h3>Add One by One</h3>
+        </div>
       </div>
-      <button class="btn btn-primary" id="submit-btn" onclick="submitRanking()" disabled>Submit</button>
+
+      <div id="rank-paste-area" style="display:none;">
+        <textarea id="rank-paste-input" placeholder="One title per line&#10;&#10;The Godfather&#10;Goodfellas&#10;Scarface&#10;..."></textarea>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="importRankPaste()">Import</button>
+          <button class="btn btn-secondary" onclick="toggleRankPaste()">Cancel</button>
+        </div>
+      </div>
+
+      <div id="rank-manual-area" style="display:none;">
+        <div class="add-manual" style="margin-bottom:14px;">
+          <input type="text" id="rank-manual-input" placeholder="Enter a title..." onkeydown="if(event.key==='Enter')addRankManual()">
+          <button class="btn btn-primary" onclick="addRankManual()">Add</button>
+          <button class="btn btn-secondary" onclick="toggleRankManual()">Cancel</button>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <div class="empty-state" id="rank-empty-msg">
+          <div class="big-icon">&#9654;</div>
+          <p>Add titles above to begin ranking.</p>
+        </div>
+        <div class="media-list" id="rank-media-list" style="display:none;"></div>
+      </div>
+
+      <div class="actions" id="rank-library-actions" style="display:none;">
+        <button class="btn btn-secondary" onclick="confirmClearRank()">Clear All</button>
+      </div>
+
+      <div id="rank-tier-tip" style="display:none;margin-top:14px;padding:10px 16px;border:1px solid var(--border);background:var(--surface);font-size:11px;color:var(--text-muted);letter-spacing:0.3px;">
+        <span style="color:var(--accent);font-weight:700;">Tip:</span> Setting High / Mid / Low tiers gives the algorithm a head start and reduces rounds needed.
+      </div>
+
+      <div id="rank-start-section" style="display:none;margin-top:20px;">
+        <button class="btn btn-primary" id="rank-start-btn" onclick="startRankMode()">Start Comparing</button>
+      </div>
     </div>
 
-    <div class="status-msg" id="status-msg"></div>
-    <button class="skip-link" onclick="loadComparison()">Skip this round &rarr;</button>
+    <!-- Compare section (hidden until started) -->
+    <div id="rank-compare-section" style="display:none;">
+      <div class="comp-header">
+        <div class="progress-row">
+          <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+          <div class="progress-text" id="progress-text">0 comparisons</div>
+        </div>
+        <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-top:8px;" id="conf-pct-label"></div>
+      </div>
+
+      <div class="comp-instruction">
+        Click in order: <span>#1 Best</span> &rarr; <span>#2</span> &rarr; <span>#3</span> &rarr; <span>#4 Worst</span> &nbsp;&middot;&nbsp; Click a selected title to deselect it
+      </div>
+
+      <div class="quad-grid" id="quad-grid"></div>
+
+      <div class="submit-row">
+        <div class="submit-status" id="submit-status">Select <span class="count">4</span> titles to rank</div>
+        <div class="rank-slots">
+          <div class="slot-pip" id="pip-1">1</div>
+          <div class="slot-pip" id="pip-2">2</div>
+          <div class="slot-pip" id="pip-3">3</div>
+          <div class="slot-pip" id="pip-4">4</div>
+        </div>
+        <button class="btn btn-primary" id="submit-btn" onclick="submitRanking()" disabled>Submit</button>
+      </div>
+
+      <div class="status-msg" id="status-msg"></div>
+      <button class="skip-link" onclick="loadComparison()">Skip this round &rarr;</button>
+
+      <!-- Rankings always shown below compare -->
+      <div style="margin-top:40px;">
+        <div class="rankings-header">
+          <div class="section-title" style="flex:1;margin:0;">Current Rankings</div>
+          <div id="conf-badge" style="font-size:11px;font-weight:700;letter-spacing:1px;padding:7px 14px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);"></div>
+          <button class="btn btn-secondary" onclick="backToRankLibrary()">Edit Library</button>
+          <button class="btn btn-primary" onclick="toggleExport()">Export</button>
+        </div>
+        <div id="rank-list" class="rank-list"></div>
+        <div class="export-box" id="export-box" style="display:none;">
+          <h3>Your Rankings - Copy Below</h3>
+          <div class="export-text" id="export-text"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- ===== RANKINGS ===== -->
-
-  <div class="screen" id="screen-rankings">
-    <div class="rankings-header">
-      <div class="section-title" style="flex:1;margin:0;">Current Rankings</div>
-      <div id="conf-badge" style="font-size:11px;font-weight:700;letter-spacing:1px;padding:7px 14px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);"></div>
-      <button class="btn btn-secondary" onclick="showScreen('battle')">Compare More</button>
-      <button class="btn btn-primary" onclick="toggleExport()">Export</button>
+  <!-- ===== FIND A WINNER ===== -->
+  <div class="screen" id="screen-tournament">
+    <div class="mode-screen-header">
+      <div class="mode-screen-label winner-label">&#9654; Find a Winner</div>
+      <div class="round-badge" id="tour-round-badge">Round 1</div>
     </div>
-    <div id="rank-list" class="rank-list"></div>
-    <div class="export-box" id="export-box" style="display:none;">
-      <h3>Your Rankings — Copy Below</h3>
-      <div class="export-text" id="export-text"></div>
+
+    <!-- Tournament library -->
+    <div id="tour-library-section">
+      <div class="import-grid">
+        <div class="import-card" onclick="toggleTourPaste()">
+          <div class="card-icon">&#9782;</div>
+          <h3>Paste a List</h3>
+        </div>
+        <div class="import-card" onclick="toggleTourManual()">
+          <div class="card-icon">&#43;</div>
+          <h3>Add One by One</h3>
+        </div>
+        <div class="import-card" onclick="loadFoodList()">
+          <div class="card-icon">&#9956;</div>
+          <h3>What to Eat?</h3>
+        </div>
+      </div>
+
+      <div id="tour-paste-area" style="display:none;">
+        <textarea id="tour-paste-input" placeholder="One title per line"></textarea>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="importTourPaste()">Import</button>
+          <button class="btn btn-secondary" onclick="toggleTourPaste()">Cancel</button>
+        </div>
+      </div>
+
+      <div id="tour-manual-area" style="display:none;">
+        <div class="add-manual" style="margin-bottom:14px;">
+          <input type="text" id="tour-manual-input" placeholder="Enter a title..." onkeydown="if(event.key==='Enter')addTourManual()">
+          <button class="btn btn-primary" onclick="addTourManual()">Add</button>
+          <button class="btn btn-secondary" onclick="toggleTourManual()">Cancel</button>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <div class="empty-state" id="tour-empty-msg">
+          <div class="big-icon">&#9654;</div>
+          <p>Add at least 2 items above to begin.</p>
+        </div>
+        <div class="media-list" id="tour-media-list" style="display:none;"></div>
+      </div>
+
+      <div class="actions" id="tour-library-actions" style="display:none;">
+        <button class="btn btn-primary" id="tour-start-btn" onclick="startTournament()">Start Tournament</button>
+        <button class="btn btn-secondary" onclick="confirmClearTour()">Clear All</button>
+      </div>
+    </div>
+
+    <!-- Tournament play -->
+    <div id="tournament-play" style="display:none;">
+      <div class="tour-progress-track"><div class="tour-progress-fill" id="tour-progress-fill" style="width:0%"></div></div>
+      <div class="tour-progress-label" id="tour-progress-label">Matchup 1</div>
+
+      <div class="matchup-container">
+        <div style="text-align:center;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);margin-bottom:18px;">Pick the winner</div>
+        <div class="matchup-vs" id="matchup-vs">
+          <div class="matchup-card" id="matchup-a" onclick="pickMatchupWinner(0)">
+            <h3 id="matchup-a-name">&nbsp;</h3>
+          </div>
+          <div class="vs-divider">VS</div>
+          <div class="matchup-card" id="matchup-b" onclick="pickMatchupWinner(1)">
+            <h3 id="matchup-b-name">&nbsp;</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="bracket-track">
+        <div class="bracket-track-title">Bracket</div>
+        <div class="bracket-pills" id="bracket-pills"></div>
+      </div>
+      <div class="actions" style="margin-top:20px;">
+        <button class="btn btn-secondary" onclick="backToTourLibrary()">Edit List</button>
+      </div>
+    </div>
+
+    <!-- Tournament result -->
+    <div id="tournament-result" style="display:none;">
+      <div class="tournament-winner-screen">
+        <div class="trophy-icon">&#9654;</div>
+        <div class="winner-name" id="tour-winner-name">&nbsp;</div>
+        <div class="winner-sub">Champion</div>
+        <div class="semifinal-list">
+          <div class="section-title" style="margin-top:24px;">Final Standings</div>
+          <div id="tour-standings"></div>
+        </div>
+        <div class="actions" style="justify-content:center;margin-top:24px;">
+          <button class="btn btn-primary" onclick="startTournament()">Run Again</button>
+          <button class="btn btn-secondary" onclick="backToTourLibrary()">Edit List</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RE-RANK ===== -->
+  <div class="screen" id="screen-rerank">
+    <div class="mode-screen-header">
+      <div class="mode-screen-label rerank-label">&#8635; Re-Rank</div>
+      <div class="purple-badge" id="rerank-phase-badge">Ready</div>
+    </div>
+
+    <!-- Re-rank library -->
+    <div id="rerank-library-section">
+      <div class="import-grid">
+        <div class="import-card" onclick="toggleRerankPaste()">
+          <div class="card-icon">&#9782;</div>
+          <h3>Paste a List</h3>
+        </div>
+        <div class="import-card" onclick="toggleRerankManual()">
+          <div class="card-icon">&#43;</div>
+          <h3>Add One by One</h3>
+        </div>
+      </div>
+
+      <div id="rerank-paste-area" style="display:none;">
+        <textarea id="rerank-paste-input" placeholder="Paste your ranked list - one title per line, best first&#10;&#10;1. The Godfather&#10;2. Goodfellas&#10;3. Scarface"></textarea>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="importRerankPaste()">Import</button>
+          <button class="btn btn-secondary" onclick="toggleRerankPaste()">Cancel</button>
+        </div>
+      </div>
+
+      <div id="rerank-manual-area" style="display:none;">
+        <div class="add-manual" style="margin-bottom:14px;">
+          <input type="text" id="rerank-manual-input" placeholder="Enter a title..." onkeydown="if(event.key==='Enter')addRerankManual()">
+          <button class="btn btn-primary" onclick="addRerankManual()">Add</button>
+          <button class="btn btn-secondary" onclick="toggleRerankManual()">Cancel</button>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <div class="empty-state" id="rerank-empty-msg">
+          <div class="big-icon">&#9654;</div>
+          <p>Add at least 4 titles above to begin.</p>
+        </div>
+        <div class="media-list" id="rerank-media-list" style="display:none;"></div>
+      </div>
+
+      <div class="actions" id="rerank-library-actions" style="display:none;">
+        <button class="btn btn-primary" id="rerank-start-btn" onclick="startRerank()">Begin Trial</button>
+        <button class="btn btn-secondary" onclick="confirmClearRerank()">Clear All</button>
+      </div>
+    </div>
+
+    <!-- Re-rank play -->
+    <div id="rerank-play" style="display:none;">
+      <div class="rerank-progress-row">
+        <div class="rerank-progress-text" id="rerank-prog-text">Round 1</div>
+        <div class="rerank-progress-track"><div class="rerank-progress-fill" id="rerank-prog-fill" style="width:0%"></div></div>
+        <div class="rerank-progress-text" id="rerank-prog-count">0 of 0</div>
+      </div>
+      <div class="comp-instruction" style="margin-bottom:16px;">
+        Click in order: <span>#1 Best</span> &rarr; <span>#2</span> &rarr; <span>#3</span> &rarr; <span>#4 Worst</span> &nbsp;&middot;&nbsp; Click a selected title to deselect it
+      </div>
+      <div class="quad-grid" id="rerank-quad-grid"></div>
+      <div class="submit-row" style="margin-top:10px;">
+        <div class="submit-status" id="rerank-submit-status">Select <span class="count">4</span> titles to rank</div>
+        <div class="rank-slots">
+          <div class="slot-pip" id="rr-pip-1">1</div>
+          <div class="slot-pip" id="rr-pip-2">2</div>
+          <div class="slot-pip" id="rr-pip-3">3</div>
+          <div class="slot-pip" id="rr-pip-4">4</div>
+        </div>
+        <button class="btn btn-primary" id="rerank-submit-btn" onclick="submitRerankRound()" disabled>Submit</button>
+      </div>
+      <button class="skip-link" onclick="skipRerankRound()">&rarr; Skip this round</button>
+    </div>
+
+    <!-- Re-rank results -->
+    <div id="rerank-results" style="display:none;">
+      <div class="result-summary">
+        <div class="big-num" id="rerank-change-count">0</div>
+        <p id="rerank-result-summary-text">positions changed.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:4px;">
+        <div style="background:var(--surface);padding:10px 16px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a090d8;text-align:center;">New Rank</div>
+        <div style="background:var(--surface);padding:10px 16px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);text-align:center;">Original Rank</div>
+      </div>
+      <div id="rerank-change-list"></div>
+      <div class="actions" style="margin-top:20px;">
+        <button class="btn btn-primary" onclick="startRerank()">Run Again</button>
+        <button class="btn btn-secondary" onclick="backToRerankLibrary()">Edit List</button>
+      </div>
     </div>
   </div>
 
@@ -419,63 +754,76 @@
 
 <script>
 // ═══════════════════════════════════════════════════════
-//  STATE
+//  STATE - separate per mode
 // ═══════════════════════════════════════════════════════
-let media = [];
+
+// Rank mode state
+let media = [];           // rank library
 let compCount = 0;
 let currentGroup = null;
 let selectionOrder = [];
+let preferenceGraph = {};
+
+// Tournament mode state
+let tourMedia = [];       // tournament library
+
+// Re-rank mode state
+let rerankMedia = [];     // rerank library (ordered)
 
 const K = 32;
 const SLOT_NAMES   = ['Best', '2nd', '3rd', 'Worst'];
 const SLOT_CLASSES = ['selected-1','selected-2','selected-3','selected-4'];
 
-const TIER_ELO = { top: 1150, high: 1150, mid: 1000, low: 850, none: 1000 };
+const TIER_ELO    = { top: 1150, high: 1150, mid: 1000, low: 850, none: 1000 };
 const TIER_LABELS = { top: 'HIGH', high: 'HIGH', mid: 'MID', low: 'LOW', none: '' };
 const TIER_COLORS = { top: '#6aaac0', high: '#6aaac0', mid: '#c0b86a', low: '#c07a6a', none: '' };
 
-
 // ═══════════════════════════════════════════════════════
-//  PREFERENCE GRAPH
-//
-//  Every comparison records directed edges: A ranked above B → edge A→B.
-//  We store the win count for each pair so repeated evidence accumulates.
-//
-//  The graph does two jobs:
-//    1. OVERRIDE: if B has more direct wins over A than A has over B,
-//       and the ELO gap is within reason, B slots above A in the final ranking.
-//    2. UNCERTAINTY: titles involved in preference cycles (A>B>C>A) are kept
-//       uncertain and get prioritised for more comparisons to resolve the tie.
+//  PREFERENCE GRAPH UTILITIES
 // ═══════════════════════════════════════════════════════
-let preferenceGraph = {}; // { winnerId: { loserId: winCount } }
 
+// Returns how many times item A has beaten item B in direct comparisons
+function aBeatsB(idA, idB) {
+  return (preferenceGraph[idA] && preferenceGraph[idA][idB]) || 0;
+}
+
+// Records a win for winner over loser in the preference graph
 function recordPreference(winnerId, loserId) {
   if (!preferenceGraph[winnerId]) preferenceGraph[winnerId] = {};
   preferenceGraph[winnerId][loserId] = (preferenceGraph[winnerId][loserId] || 0) + 1;
 }
 
-// How many times A has beaten B directly
-function aBeatsB(idA, idB) {
-  return (preferenceGraph[idA] || {})[idB] || 0;
-}
-
-// Net preference score: positive = more wins than losses across all matchups
+// Returns net preference score for an item: total wins minus total losses across all H2H matchups
 function netPreferenceScore(id) {
   let wins = 0, losses = 0;
-  for (const loserId in (preferenceGraph[id] || {})) wins += preferenceGraph[id][loserId];
-  for (const winnerId in preferenceGraph) {
-    if (winnerId !== String(id)) losses += (preferenceGraph[winnerId][id] || 0);
+  for (const opponentId in (preferenceGraph[id] || {})) {
+    wins += preferenceGraph[id][opponentId];
+  }
+  for (const otherId in preferenceGraph) {
+    if (otherId !== String(id) && preferenceGraph[otherId][id]) {
+      losses += preferenceGraph[otherId][id];
+    }
   }
   return wins - losses;
 }
 
-// Detect if this title is part of an intransitive cycle: A>B, B>C, C>A
+// Returns true if the given item is part of a preference cycle (A > B > C > A)
 function hasCycleInvolving(id) {
-  const iBeats = Object.keys(preferenceGraph[id] || {});
-  for (const loserId of iBeats) {
-    const loserBeats = Object.keys(preferenceGraph[loserId] || {});
-    for (const thirdId of loserBeats) {
-      if ((preferenceGraph[thirdId] || {})[id]) return true;
+  // BFS/DFS: can we reach id starting from id through the preference graph?
+  const visited = new Set();
+  const stack = [];
+  for (const beaten in (preferenceGraph[id] || {})) {
+    if (preferenceGraph[id][beaten] > 0) stack.push(beaten);
+  }
+  while (stack.length) {
+    const current = stack.pop();
+    if (String(current) === String(id)) return true;
+    if (visited.has(current)) continue;
+    visited.add(current);
+    for (const next in (preferenceGraph[current] || {})) {
+      if (preferenceGraph[current][next] > 0 && !visited.has(next)) {
+        stack.push(next);
+      }
     }
   }
   return false;
@@ -579,7 +927,7 @@ function expectedScore(a, b) {
 // Example: X (970 ELO) lost to A, B, C in past rounds.
 //          X then beats Y (1010 ELO).
 //          A, B, C have never beaten Y → they are implicitly above Y.
-//          Therefore X's win over Y is "worth more" — it reveals Y is
+//          Therefore X's win over Y is "worth more" - it reveals Y is
 //          weaker than X's prior opponents. Amplify the ELO swing.
 function getTransitiveMultiplier(winnerId, loserId) {
   // Who has the winner lost to?
@@ -684,11 +1032,11 @@ function reconcileH2HElo() {
         const nudge = Math.round(conflictStrength * 0.12 * h2hConfidence);
         // Move both toward resolution: raise the H2H winner, lower the H2H loser
         if (aAdvantage > 0) {
-          // A wins more H2H but has LOWER ELO — lift A, drop B slightly
+          // A wins more H2H but has LOWER ELO - lift A, drop B slightly
           mA.elo += nudge;
           mB.elo -= nudge;
         } else {
-          // B wins more H2H but has LOWER ELO — lift B, drop A slightly
+          // B wins more H2H but has LOWER ELO - lift B, drop A slightly
           mB.elo += nudge;
           mA.elo -= nudge;
         }
@@ -700,7 +1048,7 @@ function reconcileH2HElo() {
 
 // ═══════════════════════════════════════════════════════
 //  UNCERTAINTY ENGINE, CONFIDENCE, GROUP SELECTION
-//  — defined further down with outlier/neighborhood logic
+//  - defined further down with outlier/neighborhood logic
 // ═══════════════════════════════════════════════════════
 
 function scoreGroup(group) {
@@ -749,146 +1097,380 @@ function getUnsettledCount() {
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('screen-' + name).classList.add('active');
-  document.getElementById('nav-' + name).classList.add('active');
-  if (name === 'battle')     loadComparison();
-  if (name === 'rankings')   renderRankings();
-  if (name === 'import')     renderList();
-  if (name === 'quicksort')  initQuickSort();
+  const screenEl = document.getElementById('screen-' + name);
+  const navEl    = document.getElementById('nav-' + name);
+  if (screenEl) screenEl.classList.add('active');
+  if (navEl)    navEl.classList.add('active');
+  if (name === 'rank')       { renderRankLibrary(); }
+  if (name === 'tournament') { renderTourLibrary(); }
+  if (name === 'rerank')     { renderRerankLibrary(); }
+}
+
+function goToMode(name) {
+  showScreen(name);
 }
 
 
 // ═══════════════════════════════════════════════════════
-//  LIBRARY
+//  RANK LIBRARY
 // ═══════════════════════════════════════════════════════
-function addItem(name, tier) {
+function makeItem(name, tier) {
   name = name.trim();
-  if (!name) return false;
-  if (media.find(m => m.name.toLowerCase() === name.toLowerCase())) return false;
+  if (!name) return null;
   const t = tier || 'mid';
-  media.push({
-    name,
-    elo: TIER_ELO[t],
-    tier: t,
-    comparisons: 0,
-    peerComps: 0,
-    id: Date.now() + Math.random()
-  });
-  return true;
+  return { name, elo: TIER_ELO[t], tier: t, comparisons: 0, peerComps: 0, id: Date.now() + Math.random() };
 }
 
-function addManual() {
-  const input = document.getElementById('manual-input');
-  if (addItem(input.value)) {
-    input.value = '';
-    renderList();
-    updateStats();
-    showToast('Added');
-  } else {
-    showToast('Already in list or empty');
-  }
+function addRankManual() {
+  const input = document.getElementById('rank-manual-input');
+  const name  = input.value.trim();
+  if (!name) return;
+  if (media.find(m => m.name.toLowerCase() === name.toLowerCase())) { showToast('Already in list'); return; }
+  media.push(makeItem(name));
+  input.value = '';
+  renderRankLibrary();
+  showToast('Added');
 }
 
-function importPaste() {
-  const text = document.getElementById('paste-input').value;
+function importRankPaste() {
+  const text  = document.getElementById('rank-paste-input').value;
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
   let added = 0;
-  lines.forEach(l => { if (addItem(l)) added++; });
-  document.getElementById('paste-input').value = '';
-  togglePaste();
-  renderList();
-  updateStats();
+  lines.forEach(l => {
+    if (!media.find(m => m.name.toLowerCase() === l.toLowerCase())) {
+      media.push(makeItem(l)); added++;
+    }
+  });
+  document.getElementById('rank-paste-input').value = '';
+  toggleRankPaste();
+  renderRankLibrary();
   showToast(`Imported ${added} title${added !== 1 ? 's' : ''}`);
 }
 
-function removeItem(id) {
+function removeRankItem(id) {
   media = media.filter(m => m.id !== id);
-  // Clean preference graph
   delete preferenceGraph[id];
   for (const k in preferenceGraph) delete preferenceGraph[k][id];
-  renderList();
-  updateStats();
+  renderRankLibrary();
 }
 
-function renderList() {
-  const list   = document.getElementById('media-list');
-  const empty  = document.getElementById('empty-msg');
-  const btn    = document.getElementById('start-comp-btn');
-  if (media.length === 0) {
-    list.style.display='none'; empty.style.display='block'; btn.disabled=true;
-    return;
-  }
-  empty.style.display = 'none';
-  list.style.display  = 'block';
-  btn.disabled = media.length < 4;
-
-  list.innerHTML = media.map(m => {
-    const t = m.tier || 'mid';
-    return `
-      <div class="media-item">
-        <span class="media-item-name">${escHtml(m.name)}</span>
-        <div class="tier-btns">
-          <button class="tier-btn ${t==='high'?'active-high':''}" onclick="setTierInline(${m.id},'high')">High</button>
-          <button class="tier-btn ${t==='mid'?'active-mid':''}"  onclick="setTierInline(${m.id},'mid')">Mid</button>
-          <button class="tier-btn ${t==='low'?'active-low':''}"  onclick="setTierInline(${m.id},'low')">Low</button>
-        </div>
-        <button class="delete-btn" onclick="removeItem(${m.id})">✕</button>
-      </div>`;
-  }).join('');
-}
-
-function setTierInline(id, tier) {
+function setRankTier(id, tier) {
   const m = media.find(x => x.id === id);
   if (!m) return;
   m.tier = tier;
   if (m.comparisons === 0) m.elo = TIER_ELO[tier];
-  renderList();
+  renderRankLibrary();
 }
 
-function togglePaste() {
-  const pa = document.getElementById('paste-area');
-  const ma = document.getElementById('manual-area');
-  const opening = pa.style.display === 'none';
-  pa.style.display = opening ? 'block' : 'none';
-  if (opening) { ma.style.display = 'none'; }
+function renderRankLibrary() {
+  // Always reset section visibility so the library is shown and compare is hidden
+  document.getElementById('rank-library-section').style.display = 'block';
+  document.getElementById('rank-compare-section').style.display = 'none';
+
+  const list    = document.getElementById('rank-media-list');
+  const empty   = document.getElementById('rank-empty-msg');
+  const actions = document.getElementById('rank-library-actions');
+  const tip     = document.getElementById('rank-tier-tip');
+  const startSec = document.getElementById('rank-start-section');
+
+  if (media.length === 0) {
+    list.style.display = 'none'; empty.style.display = 'block';
+    if (actions) actions.style.display = 'none';
+    if (tip) tip.style.display = 'none';
+    if (startSec) startSec.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none'; list.style.display = 'block';
+  if (actions) actions.style.display = 'flex';
+  if (tip) tip.style.display = 'block';
+  if (startSec) startSec.style.display = 'block';
+
+  list.innerHTML = media.map(m => {
+    const t = m.tier || 'mid';
+    return `<div class="media-item">
+      <span class="media-item-name">${escHtml(m.name)}</span>
+      <div class="tier-btns">
+        <button class="tier-btn ${t==='high'?'active-high':''}" onclick="setRankTier(${m.id},'high')">High</button>
+        <button class="tier-btn ${t==='mid'?'active-mid':''}"  onclick="setRankTier(${m.id},'mid')">Mid</button>
+        <button class="tier-btn ${t==='low'?'active-low':''}"  onclick="setRankTier(${m.id},'low')">Low</button>
+      </div>
+      <button class="delete-btn" onclick="removeRankItem(${m.id})">&#10005;</button>
+    </div>`;
+  }).join('');
+
+  updateRankStats();
 }
 
-function toggleManual() {
-  const ma = document.getElementById('manual-area');
-  const pa = document.getElementById('paste-area');
-  const opening = ma.style.display === 'none';
-  ma.style.display = opening ? 'block' : 'none';
-  if (opening) { pa.style.display = 'none'; setTimeout(() => document.getElementById('manual-input').focus(), 50); }
-}
-
-function confirmClear() {
-  if (!media.length) return;
-  openModal('Clear Everything?', 'This will delete your entire library, all ranking data, and all preference history. This cannot be undone.', () => {
-    media = []; compCount = 0; preferenceGraph = {};
-    recentGroups.clear();
-    renderList(); updateStats(); closeModal();
-    showToast('Library cleared');
-  });
-}
-
-function updateStats() {
-  document.getElementById('stat-count').textContent = media.length;
-  document.getElementById('stat-comps').textContent = compCount;
-  if (media.length > 0) {
-    const top = getGraphAdjustedRanking()[0];
-    const name = top.name.length > 16 ? top.name.slice(0,16) + '…' : top.name;
-    document.getElementById('stat-top').textContent = name;
-  } else {
-    document.getElementById('stat-top').textContent = '—';
+function updateRankStats() {
+  const ce = document.getElementById('rank-stat-count');
+  const ce2 = document.getElementById('rank-stat-comps');
+  const ce3 = document.getElementById('rank-stat-top');
+  if (ce) ce.textContent = media.length;
+  if (ce2) ce2.textContent = compCount;
+  if (ce3) {
+    if (media.length > 0 && compCount > 0) {
+      const top = getGraphAdjustedRanking()[0];
+      const n = top.name.length > 16 ? top.name.slice(0,16) + '...' : top.name;
+      ce3.textContent = n;
+    } else { ce3.textContent = '-'; }
   }
 }
 
+function toggleRankPaste() {
+  const pa = document.getElementById('rank-paste-area');
+  const ma = document.getElementById('rank-manual-area');
+  const opening = pa.style.display === 'none';
+  pa.style.display = opening ? 'block' : 'none';
+  if (opening) ma.style.display = 'none';
+}
+
+function toggleRankManual() {
+  const ma = document.getElementById('rank-manual-area');
+  const pa = document.getElementById('rank-paste-area');
+  const opening = ma.style.display === 'none';
+  ma.style.display = opening ? 'block' : 'none';
+  if (opening) { pa.style.display = 'none'; setTimeout(() => document.getElementById('rank-manual-input').focus(), 50); }
+}
+
+function confirmClearRank() {
+  if (!media.length) return;
+  openModal('Clear Rank Library?', 'All titles, ranking data, and comparison history will be deleted.', () => {
+    media = []; compCount = 0; preferenceGraph = {};
+    recentGroups.clear();
+    backToRankLibrary();
+    closeModal();
+    showToast('Cleared');
+  });
+}
+
+function startRankMode() {
+  if (media.length < 4) { showToast('Need at least 4 titles'); return; }
+  document.getElementById('rank-library-section').style.display = 'none';
+  document.getElementById('rank-compare-section').style.display = 'block';
+  loadComparison();
+  renderRankings();
+}
+
+function backToRankLibrary() {
+  document.getElementById('rank-library-section').style.display = 'block';
+  document.getElementById('rank-compare-section').style.display = 'none';
+  renderRankLibrary();
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  TOURNAMENT LIBRARY
+// ═══════════════════════════════════════════════════════
+const FOOD_LIST = ['Chinese','Mexican','Italian','Japanese','Thai','Indian','Mediterranean','Korean BBQ','BBQ','Seafood','Pizza','Burgers','Sandwiches','Bowls','McDonald\'s','Zaxby\'s','Chick-fil-A','Taco Bell','Subway','Panera Bread','Arby\'s','Texas Roadhouse','Smithfield\'s','Culvers'];
+
+function loadFoodList() {
+  tourMedia = [];
+  FOOD_LIST.forEach(name => tourMedia.push({ name, id: Date.now() + Math.random() }));
+  renderTourLibrary();
+  showToast('Food list loaded');
+}
+
+function addTourManual() {
+  const input = document.getElementById('tour-manual-input');
+  const name  = input.value.trim();
+  if (!name) return;
+  if (tourMedia.find(m => m.name.toLowerCase() === name.toLowerCase())) { showToast('Already in list'); return; }
+  tourMedia.push({ name, id: Date.now() + Math.random() });
+  input.value = '';
+  renderTourLibrary();
+  showToast('Added');
+}
+
+function importTourPaste() {
+  const text  = document.getElementById('tour-paste-input').value;
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  let added = 0;
+  lines.forEach(l => {
+    if (!tourMedia.find(m => m.name.toLowerCase() === l.toLowerCase())) {
+      tourMedia.push({ name: l, id: Date.now() + Math.random() }); added++;
+    }
+  });
+  document.getElementById('tour-paste-input').value = '';
+  toggleTourPaste();
+  renderTourLibrary();
+  showToast(`Imported ${added} item${added !== 1 ? 's' : ''}`);
+}
+
+function removeTourItem(id) {
+  tourMedia = tourMedia.filter(m => m.id !== id);
+  renderTourLibrary();
+}
+
+function renderTourLibrary() {
+  const list    = document.getElementById('tour-media-list');
+  const empty   = document.getElementById('tour-empty-msg');
+  const actions = document.getElementById('tour-library-actions');
+  const startBtn = document.getElementById('tour-start-btn');
+
+  // Hide play/result panels, show library
+  document.getElementById('tour-library-section').style.display = 'block';
+  document.getElementById('tournament-play').style.display = 'none';
+  document.getElementById('tournament-result').style.display = 'none';
+
+  if (tourMedia.length < 2) {
+    list.style.display = 'none'; empty.style.display = 'block';
+    if (actions) actions.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none'; list.style.display = 'block';
+  if (actions) actions.style.display = 'flex';
+  if (startBtn) startBtn.disabled = false;
+
+  list.innerHTML = tourMedia.map(m => `<div class="media-item">
+    <span class="media-item-name">${escHtml(m.name)}</span>
+    <button class="delete-btn" onclick="removeTourItem(${m.id})">&#10005;</button>
+  </div>`).join('');
+}
+
+function toggleTourPaste() {
+  const pa = document.getElementById('tour-paste-area');
+  const ma = document.getElementById('tour-manual-area');
+  const opening = pa.style.display === 'none';
+  pa.style.display = opening ? 'block' : 'none';
+  if (opening) ma.style.display = 'none';
+}
+
+function toggleTourManual() {
+  const ma = document.getElementById('tour-manual-area');
+  const pa = document.getElementById('tour-paste-area');
+  const opening = ma.style.display === 'none';
+  ma.style.display = opening ? 'block' : 'none';
+  if (opening) { pa.style.display = 'none'; setTimeout(() => document.getElementById('tour-manual-input').focus(), 50); }
+}
+
+function confirmClearTour() {
+  if (!tourMedia.length) return;
+  openModal('Clear Tournament List?', 'All items will be removed.', () => {
+    tourMedia = [];
+    renderTourLibrary();
+    closeModal();
+    showToast('Cleared');
+  });
+}
+
+function backToTourLibrary() {
+  renderTourLibrary();
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  RE-RANK LIBRARY
+// ═══════════════════════════════════════════════════════
+function addRerankManual() {
+  const input = document.getElementById('rerank-manual-input');
+  const name  = input.value.trim();
+  if (!name) return;
+  if (rerankMedia.find(m => m.name.toLowerCase() === name.toLowerCase())) { showToast('Already in list'); return; }
+  rerankMedia.push({ name, id: Date.now() + Math.random() });
+  input.value = '';
+  renderRerankLibrary();
+  showToast('Added');
+}
+
+function importRerankPaste() {
+  const text  = document.getElementById('rerank-paste-input').value;
+  const lines = text.split('\n')
+    .map(l => l.trim())
+    .filter(Boolean)
+    .map(l => l.replace(/^[\d]+[.):s-]+/, '').trim())
+    .filter(Boolean);
+  let added = 0;
+  lines.forEach(l => {
+    if (!rerankMedia.find(m => m.name.toLowerCase() === l.toLowerCase())) {
+      rerankMedia.push({ name: l, id: Date.now() + Math.random() }); added++;
+    }
+  });
+  document.getElementById('rerank-paste-input').value = '';
+  toggleRerankPaste();
+  renderRerankLibrary();
+  showToast(`Imported ${added} item${added !== 1 ? 's' : ''}`);
+}
+
+function removeRerankItem(id) {
+  rerankMedia = rerankMedia.filter(m => m.id !== id);
+  renderRerankLibrary();
+}
+
+function renderRerankLibrary() {
+  const list    = document.getElementById('rerank-media-list');
+  const empty   = document.getElementById('rerank-empty-msg');
+  const actions = document.getElementById('rerank-library-actions');
+  const startBtn = document.getElementById('rerank-start-btn');
+
+  document.getElementById('rerank-library-section').style.display = 'block';
+  document.getElementById('rerank-play').style.display = 'none';
+  document.getElementById('rerank-results').style.display = 'none';
+  document.getElementById('rerank-phase-badge').textContent = 'Ready';
+
+  if (rerankMedia.length < 4) {
+    list.style.display = 'none'; empty.style.display = 'block';
+    if (actions) actions.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none'; list.style.display = 'block';
+  if (actions) actions.style.display = 'flex';
+  if (startBtn) startBtn.disabled = false;
+
+  list.innerHTML = rerankMedia.map((m, i) => {
+    const cls = i === 0 ? 'pos1' : i === 1 ? 'pos2' : i === 2 ? 'pos3' : '';
+    return `<div class="media-item">
+      <span class="rerank-rank-num ${cls}" style="font-size:14px;min-width:28px;text-align:right;flex-shrink:0;">${i+1}</span>
+      <span class="media-item-name" style="margin-left:8px;">${escHtml(m.name)}</span>
+      <button class="delete-btn" onclick="removeRerankItem(${m.id})">&#10005;</button>
+    </div>`;
+  }).join('');
+}
+
+function toggleRerankPaste() {
+  const pa = document.getElementById('rerank-paste-area');
+  const ma = document.getElementById('rerank-manual-area');
+  const opening = pa.style.display === 'none';
+  pa.style.display = opening ? 'block' : 'none';
+  if (opening) ma.style.display = 'none';
+}
+
+function toggleRerankManual() {
+  const ma = document.getElementById('rerank-manual-area');
+  const pa = document.getElementById('rerank-paste-area');
+  const opening = ma.style.display === 'none';
+  ma.style.display = opening ? 'block' : 'none';
+  if (opening) { pa.style.display = 'none'; setTimeout(() => document.getElementById('rerank-manual-input').focus(), 50); }
+}
+
+function confirmClearRerank() {
+  if (!rerankMedia.length) return;
+  openModal('Clear Re-Rank List?', 'All items will be removed.', () => {
+    rerankMedia = [];
+    renderRerankLibrary();
+    closeModal();
+    showToast('Cleared');
+  });
+}
+
+function backToRerankLibrary() {
+  renderRerankLibrary();
+}
+
+// Legacy stubs (kept so old references do not break)
+function updateStats() { updateRankStats(); }
+function renderList()  { renderRankLibrary(); }
+function addItem(name, tier) {
+  name = name.trim();
+  if (!name || media.find(m => m.name.toLowerCase() === name.toLowerCase())) return false;
+  media.push(makeItem(name, tier));
+  return true;
+}
 
 
 // ═══════════════════════════════════════════════════════
 //  COMPARE ENGINE
 // ═══════════════════════════════════════════════════════
-function startComp() { showScreen('battle'); }
+function startComp() { showScreen('rank'); }
 
 function loadComparison() {
   selectionOrder = [];
@@ -896,7 +1478,7 @@ function loadComparison() {
     document.getElementById('quad-grid').innerHTML = `
       <div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted);font-size:13px;">
         Need at least 4 titles in your library.<br>
-        <button class="btn btn-primary" style="margin-top:18px;" onclick="showScreen('import')">Go to Library</button>
+        <button class="btn btn-primary" style="margin-top:18px;" onclick="showScreen('home')">Go to Library</button>
       </div>`;
     document.getElementById('submit-btn').disabled = true;
     return;
@@ -955,7 +1537,7 @@ function updateSubmitState() {
   const rem    = 4 - filled;
   document.getElementById('submit-btn').disabled = filled < 4;
   document.getElementById('submit-status').innerHTML =
-    rem > 0 ? `Select <span class="count">${rem}</span> more title${rem!==1?'s':''}` : `All ranked — submit when ready`;
+    rem > 0 ? `Select <span class="count">${rem}</span> more title${rem!==1?'s':''}` : `All ranked - submit when ready`;
   for (let i = 1; i <= 4; i++) {
     const pip = document.getElementById('pip-' + i);
     pip.className = 'slot-pip' + (i <= filled ? ' filled-' + i : '');
@@ -965,11 +1547,12 @@ function updateSubmitState() {
 function submitRanking() {
   if (selectionOrder.length < 4) return;
   const rankedItems = selectionOrder.map(idx => currentGroup[idx]);
-  applyGroupElo(rankedItems); // also records preference graph edges
+  applyGroupElo(rankedItems);
   recordPeerComps(rankedItems);
   compCount++;
   updateStats();
-  document.getElementById('status-msg').textContent = `✓ Recorded — "${rankedItems[0].name}" ranked #1 in this round`;
+  renderRankings();
+  document.getElementById('status-msg').textContent = `\u2713 Recorded \u2014 "${rankedItems[0].name}" ranked #1 in this round`;
   setTimeout(() => loadComparison(), 550);
 }
 
@@ -984,11 +1567,11 @@ function updateProgress() {
 
   let msg = '';
   if (compCount === 0) msg = '';
-  else if (conf < 30) msg = `Building baseline — ${unsettled} titles still need data`;
-  else if (conf < 55) msg = `Rankings forming — ${unsettled} titles still uncertain`;
-  else if (conf < 75) msg = `Good confidence — ${unsettled} titles left to settle`;
-  else if (conf < 90) msg = `Strong rankings — only ${unsettled} title${unsettled!==1?'s':''} still close to call`;
-  else                msg = `High confidence — rankings are well established`;
+  else if (conf < 30) msg = `Building baseline - ${unsettled} titles still need data`;
+  else if (conf < 55) msg = `Rankings forming - ${unsettled} titles still uncertain`;
+  else if (conf < 75) msg = `Good confidence - ${unsettled} titles left to settle`;
+  else if (conf < 90) msg = `Strong rankings - only ${unsettled} title${unsettled!==1?'s':''} still close to call`;
+  else                msg = `High confidence - rankings are well established`;
   document.getElementById('status-msg').textContent = msg;
 }
 
@@ -1009,7 +1592,7 @@ function renderRankings() {
   const badge = document.getElementById('conf-badge');
   if (badge) {
     const lbl = conf < 30 ? 'Early Data' : conf < 55 ? 'Forming' : conf < 75 ? 'Good' : conf < 90 ? 'Strong' : 'High Confidence';
-    badge.textContent = `Confidence: ${conf}% — ${lbl}`;
+    badge.textContent = `Confidence: ${conf}% - ${lbl}`;
     badge.style.color = conf < 40 ? 'var(--text-muted)' : conf < 70 ? 'var(--text-dim)' : 'var(--accent)';
     badge.style.borderColor = conf >= 70 ? 'var(--accent-dim)' : 'var(--border)';
   }
@@ -1024,13 +1607,13 @@ function renderRankings() {
   const outlierIds = new Set(getOutliers(7).map(o => o.id));
   const unverifiedIds = new Set(getUnverifiedTitles().map(o => o.id));
 
-  // Check if any graph overrides are active — show legend if so
+  // Check if any graph overrides are active - show legend if so
   const anyOverride = graphRanked.some((m, i) => eloRanked.findIndex(x => x.id === m.id) !== i);
   const hasOutliers = outlierIds.size > 0;
   const legendHtml = (anyOverride || hasOutliers) ? `
     <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-bottom:12px;padding:8px 12px;border:1px solid var(--border);background:var(--surface);display:flex;flex-wrap:wrap;align-items:center;gap:12px;">
       ${anyOverride ? '<span><span style="color:#a0c4d8;font-weight:700;">↕</span> Position adjusted by direct comparison history</span>' : ''}
-      ${hasOutliers ? `<span><span style="color:#e8a040;font-weight:700;">⚠</span> ${outlierIds.size} title${outlierIds.size!==1?'s':''} flagged as possible outlier — targeted matchups queued</span>` : ''}
+      ${hasOutliers ? `<span><span style="color:#e8a040;font-weight:700;">⚠</span> ${outlierIds.size} title${outlierIds.size!==1?'s':''} flagged as possible outlier - targeted matchups queued</span>` : ''}
     </div>` : '';
 
   list.innerHTML = legendHtml + graphRanked.map((m, i) => {
@@ -1060,17 +1643,17 @@ function renderRankings() {
 
     // Outlier warning
     const outlierTag = isOutlier
-      ? `<span class="outlier-tag" title="ELO and comparison history strongly disagree on this title's position — targeted rounds queued">⚠ possible outlier</span>`
+      ? `<span class="outlier-tag" title="ELO and comparison history strongly disagree on this title's position - targeted rounds queued">⚠ possible outlier</span>`
       : '';
 
     // Neighborhood unverified
     const unverifiedTag = (!isOutlier && isUnverified && m.comparisons >= 2)
-      ? `<span style="font-size:10px;color:var(--text-muted);font-style:italic;" title="Has not yet beaten any higher-ranked title — position unconfirmed">↑ needs upward win</span>`
+      ? `<span style="font-size:10px;color:var(--text-muted);font-style:italic;" title="Has not yet beaten any higher-ranked title - position unconfirmed">↑ needs upward win</span>`
       : '';
 
     // Cycle warning
     const cycleTag = hasCycleInvolving(m.id)
-      ? `<span title="This title is in a preference cycle — more comparisons will help resolve it" style="color:#c0b86a;font-size:10px;margin-left:4px;">&#8635; cycle</span>`
+      ? `<span title="This title is in a preference cycle - more comparisons will help resolve it" style="color:#c0b86a;font-size:10px;margin-left:4px;">&#8635; cycle</span>`
       : '';
 
     // Net wins display
@@ -1206,7 +1789,7 @@ function updateQsProgress() {
   const unsorted = total - sorted;
   const pct = total > 0 ? Math.round((sorted / total) * 100) : 0;
   document.getElementById('qs-progress-row').textContent =
-    `${sorted} / ${total} sorted (${pct}%) — ${unsorted > 0 ? unsorted + ' remaining' : 'all done!'}`;
+    `${sorted} / ${total} sorted (${pct}%) - ${unsorted > 0 ? unsorted + ' remaining' : 'all done!'}`;
   document.getElementById('qs-apply-btn').disabled = (sorted === 0);
 
   // Show/hide unsorted section header
@@ -1246,8 +1829,8 @@ function applyQuickSort() {
   });
 
   // Anything still unsorted stays at 1000
-  showToast('Seeding applied — starting comparisons');
-  showScreen('battle');
+  showToast('Seeding applied - starting comparisons');
+  showScreen('rank');
 }
 
 
@@ -1298,18 +1881,20 @@ function hasUpwardWin(m) {
 
 // Returns titles that have enough comparisons to be "settling" but lack an upward win
 function getUnverifiedTitles() {
+  const eloRanked = [...media].sort((a, b) => b.elo - a.elo);
+  const lastRank = eloRanked.length - 1;
   return media.filter(m => {
-    const rank = [...media].sort((a, b) => b.elo - a.elo).findIndex(x => x.id === m.id);
-    // Bottom-ranked title can't have an upward win by definition — skip it
+    const rank = eloRanked.findIndex(x => x.id === m.id);
     if (rank === 0) return false;
+    if (rank === lastRank) return false;
     return m.comparisons >= 2 && !hasUpwardWin(m);
   });
 }
 
 // ═══════════════════════════════════════════════════════
-//  UPDATED UNCERTAINTY — factors in outlier + neighborhood
+//  UPDATED UNCERTAINTY - factors in outlier + neighborhood
 // ═══════════════════════════════════════════════════════
-// (Replaces the existing getUncertainty — we redefine it here at the bottom
+// (Replaces the existing getUncertainty - we redefine it here at the bottom
 //  so it shadows the earlier definition)
 function getUncertainty(m) {
   const n = m.comparisons || 0;
@@ -1332,11 +1917,11 @@ function getUncertainty(m) {
 
   const cycleBonus = hasCycleInvolving(m.id) ? 0.15 : 0;
 
-  // OPTION 1: Outlier penalty — ELO and graph rank strongly disagree
+  // OPTION 1: Outlier penalty - ELO and graph rank strongly disagree
   const outliers = getOutliers(7);
   const outlierBonus = outliers.some(o => o.id === m.id) ? 0.30 : 0;
 
-  // OPTION 2: Neighborhood verification — unsettled if no upward win yet
+  // OPTION 2: Neighborhood verification - unsettled if no upward win yet
   const neighborBonus = (n >= 2 && !hasUpwardWin(m) && currentRank > 0) ? 0.20 : 0;
 
   const raw = baseFactor * peerFactor - divergenceBonus + topTierUncertainty + cycleBonus
@@ -1345,34 +1930,41 @@ function getUncertainty(m) {
 }
 
 
+
 // ═══════════════════════════════════════════════════════
-//  UPDATED CONFIDENCE — penalized by active outliers
+//  CONFIDENCE - grows with comparisons, no artificial caps
 // ═══════════════════════════════════════════════════════
 function getOverallConfidence() {
-  if (media.length === 0) return 0;
-  const avgUnc = media.reduce((s,m) => s + getUncertainty(m), 0) / media.length;
-  let conf = Math.round(Math.max(0, Math.min(100, (1 - avgUnc) * 115 - 8)));
+  if (media.length === 0 || compCount === 0) return 0;
 
-  // Hard cap: each active outlier pulls max confidence down
+  const n = media.length;
+  const avgComps = media.reduce((s, m) => s + (m.comparisons || 0), 0) / n;
+  // Exponential growth saturating near 1.0 at ~10 comparisons per item
+  const compScore = 1 - Math.exp(-avgComps / 4);
+
+  // ELO spread: wider spread = more decisive outcomes
+  const elos = media.map(m => m.elo);
+  const eloSpread = Math.max(...elos) - Math.min(...elos);
+  const spreadScore = Math.min(eloSpread / 350, 1.0);
+
+  // Penalties for unresolved contradictions
+  const cycleCount = media.filter(m => hasCycleInvolving(m.id)).length;
+  const cyclePenalty = Math.min(cycleCount / n, 0.35);
   const outlierCount = getOutliers(7).length;
-  if (outlierCount > 0) conf = Math.min(conf, 78 - outlierCount * 8);
+  const outlierPenalty = Math.min(outlierCount * 0.06, 0.25);
 
-  // Also cap if many titles lack neighborhood verification
-  const unverified = getUnverifiedTitles().length;
-  const unverifiedPct = media.length > 0 ? unverified / media.length : 0;
-  if (unverifiedPct > 0.4) conf = Math.min(conf, 70);
-
-  return Math.max(0, conf);
+  const raw = compScore * 0.7 + spreadScore * 0.3 - cyclePenalty - outlierPenalty;
+  return Math.round(Math.max(0, Math.min(98, raw * 100)));
 }
 
 
 // ═══════════════════════════════════════════════════════
-//  UPDATED SELECT GROUP — bracket challenges for outliers
+//  UPDATED SELECT GROUP - bracket challenges for outliers
 // ═══════════════════════════════════════════════════════
 function selectGroup() {
   if (media.length < 4) return null;
 
-  // OPTION 3: Bracket challenge — if there's a confirmed outlier, build a
+  // OPTION 3: Bracket challenge - if there's a confirmed outlier, build a
   // targeted group pitting it against titles ranked 8–20 positions above its
   // current ELO rank. This forces resolution instead of waiting randomly.
   const outliers = getOutliers(7);
@@ -1403,7 +1995,7 @@ function selectGroup() {
     }
   }
 
-  // OPTION 3b: Neighborhood challenge — title with no upward win gets paired
+  // OPTION 3b: Neighborhood challenge - title with no upward win gets paired
   // with titles just above it in the ranking
   const unverified = getUnverifiedTitles();
   if (unverified.length > 0) {
@@ -1474,9 +2066,334 @@ function selectGroup() {
   return bestGroup.sort(() => Math.random() - 0.5);
 }
 
+// ═══════════════════════════════════════════════════════
+//  TOURNAMENT - FIND A WINNER
+// ═══════════════════════════════════════════════════════
+let tournamentPool = [];       // items still in competition
+let tournamentEliminated = []; // eliminated items in order
+let tournamentMatchups = [];   // all pairs for current round
+let tournamentMatchIdx = 0;    // which matchup we're on
+let tournamentTotalMatchups = 0;
+let tournamentDoneMatchups = 0;
+let tournamentRoundNum = 1;
+let tournamentCurrentPair = [];
+
+function initTournamentSetup() {
+  renderTourLibrary();
+}
+
+function startTournament() {
+  if (tourMedia.length < 2) { showToast('Need at least 2 items'); return; }
+  // Shuffle pool
+  tournamentPool = [...tourMedia].sort(() => Math.random() - 0.5);
+  tournamentEliminated = [];
+  tournamentRoundNum = 1;
+  tournamentDoneMatchups = 0;
+
+  document.getElementById('tour-library-section').style.display = 'none';
+  document.getElementById('tournament-result').style.display = 'none';
+  document.getElementById('tournament-play').style.display = 'block';
+
+  renderBracketPills();
+  nextTournamentRound();
+}
+
+function nextTournamentRound() {
+  if (tournamentPool.length === 1) {
+    showTournamentResult();
+    return;
+  }
+  // Build pairs for this round
+  const shuffled = [...tournamentPool].sort(() => Math.random() - 0.5);
+  tournamentMatchups = [];
+  for (let i = 0; i < shuffled.length - 1; i += 2) {
+    tournamentMatchups.push([shuffled[i], shuffled[i+1]]);
+  }
+  // If odd number, last item gets a bye (auto-advances)
+  if (shuffled.length % 2 !== 0) {
+    // the last one gets a bye
+    tournamentMatchups._bye = shuffled[shuffled.length - 1];
+  }
+  tournamentMatchIdx = 0;
+  tournamentTotalMatchups = tournamentMatchups.length;
+  document.getElementById('tour-round-badge').textContent = `Round ${tournamentRoundNum}`;
+  loadTournamentMatchup();
+}
+
+function loadTournamentMatchup() {
+  if (tournamentMatchIdx >= tournamentMatchups.length) {
+    // Round over - advance winners
+    const byeItem = tournamentMatchups._bye;
+    // winners are stored in tournamentMatchups as we overwrite them
+    const nextPool = tournamentMatchups.map(p => p._winner).filter(Boolean);
+    if (byeItem) nextPool.push(byeItem);
+    tournamentPool = nextPool.sort(() => Math.random() - 0.5);
+    tournamentRoundNum++;
+    document.getElementById('tour-round-badge').textContent = `Round ${tournamentRoundNum}`;
+    renderBracketPills();
+    nextTournamentRound();
+    return;
+  }
+  const pair = tournamentMatchups[tournamentMatchIdx];
+  tournamentCurrentPair = pair;
+
+  document.getElementById('matchup-a-name').textContent = pair[0].name;
+  document.getElementById('matchup-b-name').textContent = pair[1].name;
+  document.getElementById('matchup-a').classList.remove('winner-pick');
+  document.getElementById('matchup-b').classList.remove('winner-pick');
+
+  // Progress
+  const pct = tournamentTotalMatchups > 0 ? Math.round((tournamentDoneMatchups / (tournamentDoneMatchups + tournamentTotalMatchups - tournamentMatchIdx)) * 100) : 0;
+  document.getElementById('tour-progress-fill').style.width = Math.min(pct, 95) + '%';
+  document.getElementById('tour-progress-label').textContent = `Round ${tournamentRoundNum} · Matchup ${tournamentMatchIdx + 1} of ${tournamentTotalMatchups}`;
+}
+
+function pickMatchupWinner(side) {
+  const pair = tournamentCurrentPair;
+  if (!pair || !pair[side]) return; // guard against stale/double calls
+  const winner = pair[side];
+  const loser  = pair[1 - side];
+
+  const cardA = document.getElementById('matchup-a');
+  const cardB = document.getElementById('matchup-b');
+  (side === 0 ? cardA : cardB).classList.add('winner-pick');
+
+  // Capture index now before setTimeout fires and potentially changes it
+  const capturedIdx = tournamentMatchIdx;
+  if (tournamentMatchups[capturedIdx]) {
+    tournamentMatchups[capturedIdx]._winner = winner;
+  }
+  tournamentEliminated.unshift(loser); // losers go to bottom of standings
+  tournamentDoneMatchups++;
+  tournamentCurrentPair = null; // prevent double-clicks from re-firing
+
+  renderBracketPills();
+  setTimeout(() => {
+    tournamentMatchIdx++;
+    loadTournamentMatchup();
+  }, 400);
+}
+
+function renderBracketPills() {
+  const el = document.getElementById('bracket-pills');
+  const eliminatedIds = new Set(tournamentEliminated.map(m => m.id));
+  const allItems = [...media];
+  el.innerHTML = allItems.map(m => {
+    const isElim = eliminatedIds.has(m.id);
+    const isAlive = !isElim;
+    const cls = isElim ? 'bracket-pill eliminated' : 'bracket-pill alive';
+    return `<span class="${cls}">${escHtml(m.name)}</span>`;
+  }).join('');
+}
+
+function showTournamentResult() {
+  const champion = tournamentPool[0];
+  document.getElementById('tournament-play').style.display = 'none';
+  document.getElementById('tournament-result').style.display = 'block';
+  document.getElementById('tour-winner-name').textContent = champion.name;
+
+  // Build standings: champion first, then eliminated in reverse order
+  const allStandings = [champion, ...tournamentEliminated];
+  document.getElementById('tour-standings').innerHTML = allStandings.map((m, i) => {
+    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}.`;
+    const color = i === 0 ? 'var(--gold)' : i === 1 ? 'var(--silver)' : i === 2 ? 'var(--bronze)' : 'var(--text-muted)';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;border:1px solid var(--border);background:var(--surface);margin-bottom:2px;">
+      <span style="font-size:14px;min-width:28px;text-align:center;">${medal}</span>
+      <span style="font-size:13px;font-weight:700;color:${color};">${escHtml(m.name)}</span>
+    </div>`;
+  }).join('');
+
+  // Update progress to 100%
+  document.getElementById('tour-progress-fill').style.width = '100%';
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  RE-RANK - CONFIRM YOUR EXISTING RANKING (4-card format)
+// ═══════════════════════════════════════════════════════
+let rerankOriginal = [];
+let rerankScores   = [];
+let rerankGroups   = [];   // array of groups of 4 indices
+let rerankGroupIdx = 0;
+let rerankSelOrder = [];   // selection order for current group
+
+function initRerankSetup() {
+  renderRerankLibrary();
+}
+
+function startRerank() {
+  if (rerankMedia.length < 4) { showToast('Need at least 4 items'); return; }
+  // Build rerankOriginal from the current rerankMedia order
+  rerankOriginal = rerankMedia.map((m, i) => ({ name: m.name, origPos: i, id: m.id }));
+  rerankScores = rerankOriginal.map((_, i) => ({ idx: i, wins: 0, losses: 0 }));
+
+  // Build groups of 4 from adjacent positions - sliding window, shuffled
+  rerankGroups = [];
+  const n = rerankOriginal.length;
+  // Groups of 4 consecutive items (overlapping windows)
+  for (let i = 0; i <= n - 4; i++) {
+    rerankGroups.push([i, i+1, i+2, i+3]);
+  }
+  // Shuffle group order
+  rerankGroups.sort(() => Math.random() - 0.5);
+  rerankGroupIdx = 0;
+  rerankSelOrder = [];
+
+  document.getElementById('rerank-library-section').style.display = 'none';
+  document.getElementById('rerank-results').style.display = 'none';
+  document.getElementById('rerank-play').style.display = 'block';
+  document.getElementById('rerank-phase-badge').textContent = 'In Progress';
+  loadRerankGroup();
+}
+
+function loadRerankGroup() {
+  if (rerankGroupIdx >= rerankGroups.length) {
+    showRerankResults();
+    return;
+  }
+  rerankSelOrder = [];
+  const group = rerankGroups[rerankGroupIdx];
+  const pct = Math.round((rerankGroupIdx / rerankGroups.length) * 100);
+  document.getElementById('rerank-prog-fill').style.width = pct + '%';
+  document.getElementById('rerank-prog-text').textContent = `Round ${rerankGroupIdx + 1}`;
+  document.getElementById('rerank-prog-count').textContent = `${rerankGroupIdx + 1} of ${rerankGroups.length}`;
+
+  // Shuffle display order of this group
+  const displayOrder = [...group].sort(() => Math.random() - 0.5);
+
+  document.getElementById('rerank-quad-grid').innerHTML = displayOrder.map((origIdx, cardIdx) => {
+    const item = rerankOriginal[origIdx];
+    return `<div class="comp-card" id="rr-card-${cardIdx}" onclick="toggleRerankCard(${cardIdx})" data-orig="${origIdx}">
+      <div class="card-inner">
+        <div class="rank-badge" id="rr-badge-${cardIdx}">?</div>
+        <div class="card-body">
+          <div class="card-slot" id="rr-slot-${cardIdx}">Click to rank</div>
+          <div class="c-title">${escHtml(item.name)}</div>
+          <div class="card-meta"><span style="font-size:10px;color:var(--text-muted);">Was #${origIdx+1}</span></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  updateRerankSubmitState();
+}
+
+function toggleRerankCard(cardIdx) {
+  const pos = rerankSelOrder.indexOf(cardIdx);
+  if (pos !== -1) rerankSelOrder.splice(pos, 1);
+  else if (rerankSelOrder.length < 4) rerankSelOrder.push(cardIdx);
+
+  for (let i = 0; i < 4; i++) {
+    const card  = document.getElementById('rr-card-' + i);
+    const badge = document.getElementById('rr-badge-' + i);
+    const slot  = document.getElementById('rr-slot-' + i);
+    if (!card) continue;
+    SLOT_CLASSES.forEach(c => card.classList.remove(c));
+    const rankPos = rerankSelOrder.indexOf(i);
+    if (rankPos !== -1) {
+      card.classList.add(SLOT_CLASSES[rankPos]);
+      badge.textContent = rankPos + 1;
+      slot.textContent  = SLOT_NAMES[rankPos];
+    } else {
+      badge.textContent = '?';
+      slot.textContent  = 'Click to rank';
+    }
+  }
+  updateRerankSubmitState();
+}
+
+function updateRerankSubmitState() {
+  const filled = rerankSelOrder.length;
+  const rem    = 4 - filled;
+  const btn    = document.getElementById('rerank-submit-btn');
+  if (btn) btn.disabled = filled < 4;
+  document.getElementById('rerank-submit-status').innerHTML =
+    rem > 0 ? `Select <span class="count">${rem}</span> more` : `All ranked - submit when ready`;
+  for (let i = 1; i <= 4; i++) {
+    const pip = document.getElementById('rr-pip-' + i);
+    if (pip) pip.className = 'slot-pip' + (i <= filled ? ' filled-' + i : '');
+  }
+}
+
+function submitRerankRound() {
+  if (rerankSelOrder.length < 4) return;
+  const group = rerankGroups[rerankGroupIdx];
+  const grid  = document.getElementById('rerank-quad-grid');
+  const cards = grid.querySelectorAll('.comp-card');
+
+  // Build ranked order from selection
+  const rankedOrigIdxs = rerankSelOrder.map(cardIdx => {
+    return parseInt(cards[cardIdx].dataset.orig);
+  });
+
+  // Apply wins/losses: higher rank beats lower rank
+  for (let i = 0; i < rankedOrigIdxs.length; i++) {
+    for (let j = i + 1; j < rankedOrigIdxs.length; j++) {
+      rerankScores[rankedOrigIdxs[i]].wins++;
+      rerankScores[rankedOrigIdxs[j]].losses++;
+    }
+  }
+
+  rerankGroupIdx++;
+  setTimeout(() => loadRerankGroup(), 300);
+}
+
+function skipRerankRound() {
+  rerankGroupIdx++;
+  loadRerankGroup();
+}
+
+function showRerankResults() {
+  document.getElementById('rerank-play').style.display = 'none';
+  document.getElementById('rerank-results').style.display = 'block';
+  document.getElementById('rerank-phase-badge').textContent = 'Complete';
+  document.getElementById('rerank-prog-fill').style.width = '100%';
+
+  const sorted = rerankScores
+    .map((s, i) => ({ ...s, name: rerankOriginal[i].name, origPos: i }))
+    .sort((a, b) => {
+      const netA = a.wins - a.losses;
+      const netB = b.wins - b.losses;
+      if (netB !== netA) return netB - netA;
+      return a.origPos - b.origPos;
+    });
+
+  const newPositions = {};
+  sorted.forEach((item, newPos) => { newPositions[item.origPos] = newPos; });
+
+  let changedCount = 0;
+
+  const rows = sorted.map((item, newPos) => {
+    const origPos = item.origPos;
+    const diff = origPos - newPos;
+    const changed = diff !== 0;
+    if (changed) changedCount++;
+    const cls = changed ? (diff > 0 ? 'moved-up' : 'moved-down') : 'unchanged';
+    const arrowCls = diff > 0 ? 'up' : diff < 0 ? 'down' : 'same';
+    const arrowTxt = diff > 0 ? `&#8593; +${diff}` : diff < 0 ? `&#8595; ${diff}` : '-';
+    const newNumCls = newPos === 0 ? 'pos1' : newPos === 1 ? 'pos2' : newPos === 2 ? 'pos3' : '';
+    const oldNumCls = origPos === 0 ? 'pos1' : origPos === 1 ? 'pos2' : origPos === 2 ? 'pos3' : '';
+    return `<div class="change-item ${cls}">
+      <span class="rerank-rank-num ${newNumCls}" style="font-size:14px;">${newPos+1}</span>
+      <span class="change-name">${escHtml(item.name)}</span>
+      <span class="change-arrow ${arrowCls}">${arrowTxt}</span>
+      <span class="rerank-rank-num ${oldNumCls}" style="font-size:12px;opacity:0.6;">${origPos+1}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('rerank-change-count').textContent = changedCount;
+  const total = rerankOriginal.length;
+  document.getElementById('rerank-result-summary-text').textContent =
+    changedCount === 0
+      ? `All ${total} positions held. Your ranking is consistent.`
+      : `${changedCount} of ${total} positions shifted.`;
+
+  document.getElementById('rerank-change-list').innerHTML = rows;
+}
+
+
 // Init
-renderList();
-updateStats();
+showScreen('home');
 </script>
 </body>
 </html>
